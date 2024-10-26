@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation'
 import NavLink from '@/components/Navbar/NavLink';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
@@ -27,6 +28,8 @@ export default function Navbar() {
     };
   }, [isDrawerOpen]);
 
+  const pathname = usePathname();
+
   return (
     <>
       <nav className="navbar bg-transparent w-full flex justify-between items-center px-4 md:px-10">
@@ -34,10 +37,10 @@ export default function Navbar() {
 
         {/* Desktop Nav Links */}
         <div className="hidden md:flex navbar-end gap-8 md:gap-20 mr-4 md:mr-10">
-          <NavLink name="Home" route="/" />
-          <NavLink name="Order Online" route="/order" />
-          <NavLink name="Menu" route="/menu" />
-          <NavLink name="Contact Us" route="/contact" />
+          <NavLink name="Home" route="/" pathname={pathname} />
+          <NavLink name="Order Online" route="/order" pathname={pathname} />
+          <NavLink name="Menu" route="/menu" pathname={pathname} />
+          <NavLink name="Contact Us" route="/contact" pathname={pathname} />
         </div>
 
         {/* Hamburger Icon for Mobile */}
@@ -58,10 +61,10 @@ export default function Navbar() {
         }`}
       >
         <div className="flex flex-col items-center gap-8 mt-16">
-          <NavLink name="Home" route="/" onClick={toggleDrawer} />
-          <NavLink name="Order Online" route="/order" onClick={toggleDrawer} />
-          <NavLink name="Menu" route="/menu" onClick={toggleDrawer} />
-          <NavLink name="Contact Us" route="/contact" onClick={toggleDrawer} />
+          <NavLink name="Home" route="/" onClick={toggleDrawer} pathname={pathname} />
+          <NavLink name="Order Online" route="/order" onClick={toggleDrawer} pathname={pathname} />
+          <NavLink name="Menu" route="/menu" onClick={toggleDrawer} pathname={pathname} />
+          <NavLink name="Contact Us" route="/contact" onClick={toggleDrawer} pathname={pathname} />
         </div>
       </div>
     </>

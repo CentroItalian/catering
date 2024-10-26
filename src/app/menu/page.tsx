@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar/Navbar';
 import Menu1 from "@/../public/menu/menu-1.png";
 import Menu2 from "@/../public/menu/menu-2.png";
 import Menu3 from "@/../public/menu/menu-3.png";
+import Footer from '@/components/Footer';
 
 const MenuPage = () => {
   return (
@@ -27,7 +28,7 @@ const MenuPage = () => {
       <div className='flex justify-center items-center flex-col gap-5 py-10'>
 
         <a
-          href="/files/menu.pdf"
+          href="/files/Italian Centro Catering Menu.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className='btn rounded-full py-2 px-6 sm:px-10 bg-[#f9a826] text-white font-bold text-lg sm:text-2xl'
@@ -41,6 +42,8 @@ const MenuPage = () => {
           <Image src={Menu3} alt='Menu3' priority className="w-full h-auto object-cover" />
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }

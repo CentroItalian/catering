@@ -42,7 +42,7 @@ export default function Home() {
       </div>
 
       {/* About Us Section */}
-      <div className='flex justify-center items-center flex-col px-5 py-36 font-italiana text-center bg-[#d7cece]'>
+      <div className='flex justify-center items-center flex-col px-32 py-36 font-italiana text-center bg-[#d7cece]'>
 
         <h1 className='text-6xl font-bold mb-10'>About Us</h1>
         <p className='text-2xl font-semibold'>
