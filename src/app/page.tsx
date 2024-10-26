@@ -5,23 +5,37 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div data-theme="fantasy">
-      <Navbar />
+      <div>
+        <section id="home" className="hero text-white py-32 flex flex-col items-center text-center min-h-screen justify-center relative">
+          {/* Navbar positioned at the top */}
+          <div className="absolute top-0 left-0 w-full z-20">
+            <Navbar />
+          </div>
 
-      <BackgroundSlideshow />
+          <div className="absolute inset-0 overflow-hidden">
+            <BackgroundSlideshow />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/15 to-black/30 z-0"></div>
+          </div>
 
-      <div className="relative z-10 flex items-center justify-center h-screen text-white flex-col gap-5 md:gap-7 font-italiana p-4 text-center">
-        <div className="flex flex-col items-center justify-center gap-2 md:gap-3">
-          <h1 className="text-3xl md:text-5xl font-bold">CENTRO</h1>
-          <h1 className="text-3xl md:text-5xl font-bold">Italian Catering</h1>
-        </div>
-        <div>
-          <Link href="/order">
-            <button className="btn bg-yellow-300 rounded-3xl px-6 md:px-10 py-2 text-lg md:text-2xl">
-              Order Online
-            </button>
-          </Link>
-        </div>
+          {/* Hero Content */}
+          <div className="z-10 font-italiana flex flex-col gap-5">
+            <div>
+              <h1 className="text-3xl md:text-5xl font-bold">CENTRO</h1>
+              <h1 className="text-3xl md:text-5xl font-bold">Italian Catering</h1>
+            </div>
+            <Link href="/order">
+              <button className="btn bg-yellow-300 rounded-3xl px-6 md:px-10 py-2 text-lg md:text-2xl">
+                Order Online
+              </button>
+            </Link>
+          </div>
+        </section>
       </div>
-    </div>
+
+
+      <footer>
+        meow
+      </footer>
+    </div >
   );
 }

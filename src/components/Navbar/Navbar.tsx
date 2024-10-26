@@ -29,7 +29,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="navbar bg-transparent fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-10">
+      <nav className="navbar bg-transparent w-full flex justify-between items-center px-4 md:px-10">
         <div className="navbar-start"></div>
 
         {/* Desktop Nav Links */}

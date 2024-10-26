@@ -21,13 +21,11 @@ const BackgroundSlideshow = () => {
   }, [images.length]);
 
   return (
-    <div className="w-full h-screen fixed top-0 left-0 overflow-hidden z-0">
+    <div className="w-full h-screen overflow-hidden z-0">
       {images.map((src, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentIndex ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
         >
           <Image
             src={src}
