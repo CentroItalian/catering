@@ -35,7 +35,7 @@ const BackgroundSlideshow = () => {
             fill
             quality={100}
             className="animate-zoom object-cover"
-            priority={index === currentIndex}
+            priority={true}
           />
         </div>
       ))}
