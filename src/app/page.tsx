@@ -23,11 +23,19 @@ export default function Home() {
               <h1 className="text-3xl md:text-5xl font-bold">CENTRO</h1>
               <h1 className="text-3xl md:text-5xl font-bold">Italian Catering</h1>
             </div>
-            <Link href="/order">
-              <button className="btn bg-yellow-300 rounded-3xl px-6 md:px-10 py-2 text-lg md:text-2xl">
-                Order Online
-              </button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
+              <Link href="/order">
+                <button className="btn bg-yellow-300 min-w-[180px] sm:min-w-[220px] rounded-3xl px-4 sm:px-6 md:px-10 py-2 text-base sm:text-lg md:text-2xl">
+                  Order Online
+                </button>
+              </Link>
+              <Link href="/menu">
+                <button className="btn bg-yellow-300 min-w-[180px] sm:min-w-[220px] rounded-3xl px-4 sm:px-6 md:px-10 py-2 text-base sm:text-lg md:text-2xl">
+                  View Menu
+                </button>
+              </Link>
+            </div>
+
           </div>
         </section>
       </div>
