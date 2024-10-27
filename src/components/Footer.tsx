@@ -20,7 +20,7 @@ const Footer = () => {
           </div>
         </Link>
 
-        <Link href={"mailto:e"} target='_blank' rel='noopener noreferrer'>
+        <Link href={"mailto:orders@mgmroastbeef.com"} target='_blank' rel='noopener noreferrer'>
           <div className={`rounded-lg flex justify-center items-center w-12 h-12 bg-[#6495ED]`} title='Mail'>
             <MdEmail className="text-3xl cursor-pointer" />
           </div>
