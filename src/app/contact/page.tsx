@@ -3,27 +3,76 @@
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar/Navbar';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
+import { z } from 'zod';
 
 import Map from "@/../public/map.png";
-
 import { FaUser, FaPhone } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import Image from 'next/image';
 import sendContactMail from '@/actions/sendContactMail';
 
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .regex(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone must be in the format (123) 456-7890"),
+  message: z.string().min(1, "Message is required"),
+});
+
 const ContactPage = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  interface FormData {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+  }
+
+  interface FormErrors {
+    name?: { _errors: string[] };
+    email?: { _errors: string[] };
+    phone?: { _errors: string[] };
+    message?: { _errors: string[] };
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const { name, value } = e.target;
+
+    setFormData((prevData: FormData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    if (name === 'phone') {
+      const rawValue = value.replace(/\D/g, '');
+      let formattedPhone = rawValue;
+      if (rawValue.length >= 4 && rawValue.length <= 6) {
+        formattedPhone = `(${rawValue.slice(0, 3)}) ${rawValue.slice(3)}`;
+      } else if (rawValue.length >= 7) {
+        formattedPhone = `(${rawValue.slice(0, 3)}) ${rawValue.slice(3, 6)}-${rawValue.slice(6, 10)}`;
+      }
+      setFormData((prevData: FormData) => ({ ...prevData, phone: formattedPhone }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const validationResult = contactSchema.safeParse(formData);
 
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    if (!validationResult.success) {
+      const formattedErrors = validationResult.error.format();
+      setErrors(formattedErrors);
+      return;
+    }
 
+    setFormData({ name: '', email: '', phone: '', message: '' });
+    setErrors({});
     (document.getElementById('thank_you_modal') as HTMLDialogElement).showModal();
-
-    await sendContactMail(data);
+    await sendContactMail(formData);
   };
 
   const handleMapImageRedirect = () => {
@@ -31,7 +80,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="bg-[#d7cece] font-semibold">
+    <div className="bg-[#CBC3E3] font-semibold">
       {/* Banner */}
       <div id="banner" className="relative h-[300px] sm:h-[416px] w-full">
         <div className="absolute top-0 left-0 w-full z-20">
@@ -72,25 +121,61 @@ const ContactPage = () => {
 
             <label htmlFor="name" className="input input-bordered flex items-center gap-2">
               <FaUser />
-              <input type="text" className="grow" placeholder="Name" name="name" required />
+              <input
+                type="text"
+                className="grow"
+                placeholder="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
             </label>
+            {errors.name && <p className="text-red-500 text-sm">{errors.name._errors[0]}</p>}
 
             <label htmlFor="email" className="input input-bordered flex items-center gap-2">
               <IoMail />
-              <input type="text" className="grow" placeholder="E-Mail" name="email" required />
+              <input
+                type="text"
+                className="grow"
+                placeholder="E-Mail"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </label>
+            {errors.email && <p className="text-red-500 text-sm">{errors.email._errors[0]}</p>}
 
             <label htmlFor="phone" className="input input-bordered flex items-center gap-2">
               <FaPhone />
-              <input type="number" className="grow" placeholder="Phone" name="phone" required />
+              <input
+                type="text"
+                className="grow"
+                placeholder="(123) 456-7890"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
             </label>
+            {errors.phone && <p className="text-red-500 text-sm">{errors.phone._errors[0]}</p>}
 
             <label htmlFor='message' className="form-control">
               <div className="label">
                 <span className="label-text">Message</span>
               </div>
-              <textarea className="textarea textarea-bordered min-h-24 resize-none" name='message' placeholder="Message" required />
+              <textarea
+                className="textarea textarea-bordered min-h-24 resize-none"
+                name='message'
+                placeholder="Message"
+                value={formData.message}
+                onChange={handleChange}
+                required
+              />
             </label>
+            {errors.message && <p className="text-red-500 text-sm">{errors.message._errors[0]}</p>}
+
             <button className="btn btn-primary">Submit</button>
           </form>
         </div>
