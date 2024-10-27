@@ -32,6 +32,7 @@ const ContactPage = () => {
           <div className="text-black text-center md:text-left">
             <h1 className="text-4xl md:text-6xl font-bold mb-3 md:mb-5">Contact Us</h1>
             <Link href="https://maps.app.goo.gl/HKMGrMCqzZmEWtgFA" target="_blank" rel="noopener noreferrer">
+            <h1 className="text-3xl md:text-4xl font-bold text-center">Centro Italian Catering</h1>
               <p className="text-lg md:text-xl">
                 905 Brentwood Rd NE, Washington, DC 20018
               </p>
