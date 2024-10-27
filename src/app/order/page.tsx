@@ -20,8 +20,14 @@ interface CartItem {
 const OrderPage = () => {
   const [order, setOrder] = useState<{ [key: string]: { quantity: number; instructions: string } }>({});
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [orderType, setOrderType] = useState<'pickup' | 'delivery'>('pickup');
   const [isCartEmpty, setIsCartEmpty] = useState(cart.length === 0);
+  const [buttonStyle, setButtonStyle] = useState<{ position: 'fixed' | 'absolute', bottom: number }>({
+    position: 'fixed',
+    bottom: 0
+  });
 
+  const footerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const confettiRef = useRef<JSConfetti | null>(null);
 
@@ -31,6 +37,34 @@ const OrderPage = () => {
 
   useEffect(() => {
     confettiRef.current = new JSConfetti({ canvas: canvasRef.current ?? undefined });
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (footerRef.current) {
+        const footerTop = footerRef.current.getBoundingClientRect().top;
+        const viewportHeight = window.innerHeight;
+
+        if (footerTop <= viewportHeight) {
+          // When footer is visible, position button absolutely above it
+          setButtonStyle({
+            position: 'absolute',
+            bottom: footerRef.current.offsetHeight
+          });
+        } else {
+          // When footer is not visible, keep button fixed at bottom
+          setButtonStyle({
+            position: 'fixed',
+            bottom: 0
+          });
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleQuantityChange = (itemName: string, increment: boolean) => {
@@ -65,13 +99,12 @@ const OrderPage = () => {
       confettiRadius: 5,
       confettiNumber: 300
     });
-    (document.getElementById('cart_modal') as HTMLDialogElement).close();
-
+    (document.getElementById('user_details_modal') as HTMLDialogElement).close();
     (document.getElementById('thank_you_modal') as HTMLDialogElement).showModal();
   };
 
   return (
-    <div className="font-semibold bg-[#d7cece]">
+    <div className="font-semibold bg-[#d7cece] relative">
       {/* Banner */}
       <div id="banner" className="relative h-[300px] sm:h-[416px] w-full mb-5">
         <div className="absolute top-0 left-0 w-full z-20">
@@ -126,18 +159,29 @@ const OrderPage = () => {
       <div id="blank_box" className='bg-transparent py-10 w-full'></div>
 
       {/* Add to Cart Button */}
-      <div className="fixed bottom-80 sm:bottom-64 left-0 right-0 flex justify-center z-50">
-        <button
-          className="bg-green-500 text-white py-2 px-4 rounded-lg flex items-center gap-2"
-          onClick={handleAddToCart}
-        >
-          <AiOutlineShoppingCart size={24} />
-          Add to Cart
-        </button>
+      <div
+        className="left-0 right-0 z-50"
+        style={{
+          position: buttonStyle.position,
+          bottom: buttonStyle.position === 'absolute' ? buttonStyle.bottom + 5 : 5
+        }}
+      >
+        <div className="max-w-7xl mx-auto flex justify-center">
+          <button
+            className="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg flex items-center gap-2 transition-colors"
+            onClick={handleAddToCart}
+          >
+            <AiOutlineShoppingCart size={24} />
+            Add to Cart
+          </button>
+        </div>
       </div>
 
 
-      <Footer />
+      {/* Footer */}
+      <div ref={footerRef}>
+        <Footer />
+      </div>
 
       {/* Cart Modal */}
       <dialog id="cart_modal" className="modal modal-bottom sm:modal-middle">
@@ -153,16 +197,27 @@ const OrderPage = () => {
                     <p className="text-sm text-gray-400">Instructions: {cartItem.instructions}</p>
                   )}
                 </div>
-                {/* <div className="text-right font-semibold">{cartItem.quantity}</div> */}
               </div>
             ))
           ) : (
             <p className="text-gray-500">Your cart is empty</p>
           )}
 
-          <form onSubmit={handleSubmitOrder}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              (document.getElementById('cart_modal') as HTMLDialogElement).close();
+              (document.getElementById('user_details_modal') as HTMLDialogElement).showModal();
+            }}
+          >
             <button className="btn btn-success mr-5" type="submit" disabled={isCartEmpty}>Place Order</button>
-            <button className="btn" type='button' onClick={() => (document.getElementById('cart_modal') as HTMLDialogElement).close()}>Close</button>
+            <button className="btn" type='button'
+              onClick={() => {
+                (document.getElementById('cart_modal') as HTMLDialogElement).close();
+              }}
+            >
+              Close
+            </button>
           </form>
         </div>
 
@@ -171,11 +226,129 @@ const OrderPage = () => {
         </form>
       </dialog>
 
-      {/* Contact Detail Modal */}
+      {/* User Details Modal */}
+      <dialog id="user_details_modal" className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box font-semibold">
+          <h2 className="text-xl font-bold mb-4">User Details</h2>
+          <form onSubmit={handleSubmitOrder}>
+            <div className="flex flex-col gap-3 m-3">
+
+              {/* Radio buttons for Pick-up and Delivery */}
+              <div className="form-control">
+                <label className="label cursor-pointer">
+                  <span className="label-text">Pick-up</span>
+                  <input
+                    type="radio"
+                    name="order_type"
+                    value="pickup"
+                    className="radio checked:bg-blue-500"
+                    onChange={(e) => setOrderType(e.target.value as 'pickup' | 'delivery')}
+                    checked={orderType === 'pickup'}
+                  />
+                </label>
+                <label className="label cursor-pointer">
+                  <span className="label-text">Delivery</span>
+                  <input
+                    type="radio"
+                    name="order_type"
+                    value="delivery"
+                    className="radio checked:bg-blue-500"
+                    onChange={(e) => setOrderType(e.target.value as 'pickup' | 'delivery')}
+                    checked={orderType === 'delivery'}
+                  />
+                </label>
+              </div>
+
+              {/* Conditional rendering based on radio selection */}
+              {orderType === "pickup" && (
+                <div className="flex justify-center">
+                  <Image src={"/map.png"} alt='map' width={600} height={200} className='object-contain rounded-lg mb-5' unoptimized />
+                </div>
+              )}
+
+              {orderType === "delivery" && (
+                <div className="flex flex-col gap-3">
+                  <input type="text" placeholder="Street Address" name='address' className="input border border-black" required />
+                  <input type="text" placeholder="City" name="city" className="input border border-black" required />
+                  <input type="number" placeholder="ZIP Code" name='zip_code' className="input border border-black" required />
+
+                  {/* Dropdown for State */}
+                  <select className="select border border-black font-semibold" name='state' required>
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="DC">District Of Columbia</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    <option value="HI">Hawaii</option>
+                    <option value="ID">Idaho</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IN">Indiana</option>
+                    <option value="IA">Iowa</option>
+                    <option value="KS">Kansas</option>
+                    <option value="KY">Kentucky</option>
+                    <option value="LA">Louisiana</option>
+                    <option value="ME">Maine</option>
+                    <option value="MD">Maryland</option>
+                    <option value="MA">Massachusetts</option>
+                    <option value="MI">Michigan</option>
+                    <option value="MN">Minnesota</option>
+                    <option value="MS">Mississippi</option>
+                    <option value="MO">Missouri</option>
+                    <option value="MT">Montana</option>
+                    <option value="NE">Nebraska</option>
+                    <option value="NV">Nevada</option>
+                    <option value="NH">New Hampshire</option>
+                    <option value="NJ">New Jersey</option>
+                    <option value="NM">New Mexico</option>
+                    <option value="NY">New York</option>
+                    <option value="NC">North Carolina</option>
+                    <option value="ND">North Dakota</option>
+                    <option value="OH">Ohio</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="OR">Oregon</option>
+                    <option value="PA">Pennsylvania</option>
+                    <option value="RI">Rhode Island</option>
+                    <option value="SC">South Carolina</option>
+                    <option value="SD">South Dakota</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="TX">Texas</option>
+                    <option value="UT">Utah</option>
+                    <option value="VT">Vermont</option>
+                    <option value="VA">Virginia</option>
+                    <option value="WA">Washington</option>
+                    <option value="WV">West Virginia</option>
+                    <option value="WI">Wisconsin</option>
+                    <option value="WY">Wyoming</option>
+                  </select>
+                </div>
+              )}
+
+              {/* User details fields */}
+              <input type="text" placeholder="Name" name='name' className="input border border-black" />
+              <input type="email" placeholder="Email" name='email' className="input border border-black" />
+              <input type="tel" placeholder="Phone" name='phone' className="input border border-black" />
+            </div>
+
+            <button className="btn btn-success">Submit</button>
+            <button className="btn ml-5" type='button' onClick={() => (document.getElementById('user_details_modal') as HTMLDialogElement).close()}>Continue Order</button>
+          </form>
+        </div>
+      </dialog>
+
 
       {/* Thank You Modal */}
       <dialog id="thank_you_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
+
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute text-xl right-2 top-2">✕</button>
+          </form>
 
           <div className='flex justify-center items-center flex-col'>
             <h1 className='text-4xl font-bold'>Thank You for your order!</h1>
@@ -188,9 +361,6 @@ const OrderPage = () => {
               <Link href='/contact'>
                 <button className='btn btn-primary'>Contact Us</button>
               </Link>
-              <button className="btn" type='button' onClick={() => (document.getElementById('thank_you_modal') as HTMLDialogElement).close()}>
-                Close
-              </button>
             </div>
           </div>
 
