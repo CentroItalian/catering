@@ -1,45 +1,47 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Minus, Plus, Send } from 'lucide-react';
-import Image from "next/image";
-
-import { menuItems } from '@/lib/MenuItems';
+import Image from 'next/image';
+import { menu as menuData } from "@/lib/MenuItems";
 import Navbar from '@/components/Navbar/Navbar';
-import Footer from '@/components/Footer';
+import { AiOutlineShoppingCart } from "react-icons/ai";
 
-const CateringOrder = () => {
+interface CartItem {
+  name: string;
+  quantity: number;
+  instructions: string;
+}
 
-  const [orders, setOrders] = useState<{ [key: string]: { quantity: number; comments: string } }>(
-    Object.fromEntries(menuItems.map(item => [item.name, { quantity: 0, comments: '' }]))
-  );
+const OrderPage = () => {
+  const [order, setOrder] = useState<{ [key: string]: { quantity: number; instructions: string } }>({});
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const handleQuantityChange = (itemName: string, increment: boolean) => {
+    setOrder((prevOrder) => {
+      const currentQuantity = prevOrder[itemName]?.quantity || 0;
+      const newQuantity = increment ? currentQuantity + 1 : Math.max(0, currentQuantity - 1);
+      return { ...prevOrder, [itemName]: { ...prevOrder[itemName], quantity: newQuantity } };
+    });
+  };
 
-  const updateQuantity = (itemName: string, newQuantity: number) => {
-    setOrders(prev => ({
-      ...prev,
-      [itemName]: { ...prev[itemName], quantity: Math.max(0, newQuantity) }
+  const handleInstructionChange = (itemName: string, instructions: string) => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      [itemName]: { ...prevOrder[itemName], instructions },
     }));
   };
 
-  const updateComments = (itemName: string, comments: string) => {
-    setOrders(prev => ({
-      ...prev,
-      [itemName]: { ...prev[itemName], comments }
-    }));
+  const handleAddToCart = () => {
+    const newCart = Object.entries(order)
+      .filter(([, item]) => item.quantity > 0)
+      .map(([name, item]) => ({ name, quantity: item.quantity, instructions: item.instructions || '' }));
+    setCart(newCart);
+    setIsModalOpen(true);
   };
-
-  const handleSubmit = () => {
-    setShowConfirmation(true);
-    // Email sending logic would go here
-  };
-
-  const categories = Array.from(new Set(menuItems.map(item => item.category)));
 
   return (
-    <div className="min-h-screen bg-[#d7cece]">
-
+    <div className="font-semibold bg-[#d7cece]">
       {/* Banner */}
       <div id="banner" className="relative h-[300px] sm:h-[416px] w-full mb-5">
         <div className="absolute top-0 left-0 w-full z-20">
@@ -47,80 +49,97 @@ const CateringOrder = () => {
         </div>
         <Image src="/banner.jpg" alt="banner" fill priority className="object-cover" />
         <div className="absolute inset-0 bg-black opacity-70"></div>
-
         <div className="absolute inset-0 flex items-center justify-center text-white text-4xl sm:text-6xl font-bold">
           Centro Italian Catering
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto flex justify-center items-center flex-col">
-        {showConfirmation ? (
-          <div className="p-6 text-center bg-white/80 backdrop-blur rounded-md shadow-md">
-            <h2 className="text-2xl font-serif text-sage-800 mb-4">Thank You for Your Order!</h2>
-            <p className="text-sage-600">The invoice has been sent, and our team will contact you soon.</p>
-          </div>
-        ) : (
-          <>
-            {categories.map(category => (
-              <div key={category} className="flex flex-col">
-                <h2 className="text-4xl font-serif text-sage-800 mb-6 text-center">{category}</h2>
+      {/* Menu */}
+      {menuData.map((menu) => (
+        <div key={menu.category} className="mt-6 p-4">
+          <h2 className="text-2xl font-bold">{menu.category}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {menu.items.map((item) => (
+              <div key={item.name} className="border p-4 rounded-lg bg-white">
+                <h3 className="text-xl font-semibold">{item.name}</h3>
+                <p className="text-gray-600">{item.description}</p>
+                <p className="text-gray-500">Serves: {item.serves}</p>
 
-                {menuItems
-                  .filter(item => item.category === category)
-                  .map((item, index) => (
-                    <div key={index} className="mb-6 bg-white/80 backdrop-blur p-6 rounded-md shadow-md">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-grow">
-                          <h3 className="text-xl font-serif text-sage-800">{item.name}</h3>
-                          <p className="text-sage-600 mt-2">{item.description}</p>
-                          <p className="text-sage-500 text-sm mt-1">{item.serves}</p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <button
-                            className="p-2 border rounded"
-                            onClick={() => updateQuantity(item.name, orders[item.name].quantity - 1)}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </button>
-                          <input
-                            type="number"
-                            value={orders[item.name].quantity}
-                            onChange={(e) => updateQuantity(item.name, parseInt(e.target.value) || 0)}
-                            className="w-16 text-center border rounded"
-                            min="0"
-                          />
-                          <button
-                            className="p-2 border rounded"
-                            onClick={() => updateQuantity(item.name, orders[item.name].quantity + 1)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
-                      <textarea
-                        placeholder="Special instructions or comments..."
-                        className="mt-4 w-full border rounded p-2"
-                        value={orders[item.name].comments}
-                        onChange={(e) => updateComments(item.name, e.target.value)}
-                      />
-                    </div>
-                  ))}
+                <div className="flex items-center mt-2">
+                  <button
+                    className="bg-gray-300 px-2 rounded-lg"
+                    onClick={() => handleQuantityChange(item.name, false)}
+                  >
+                    -
+                  </button>
+                  <span className="px-4">{order[item.name]?.quantity || 0}</span>
+                  <button
+                    className="bg-gray-300 px-2 rounded-lg"
+                    onClick={() => handleQuantityChange(item.name, true)}
+                  >
+                    +
+                  </button>
+                </div>
+
+                <textarea
+                  className="mt-2 w-full p-2 border rounded-lg resize-none"
+                  placeholder="Special instructions"
+                  value={order[item.name]?.instructions || ''}
+                  onChange={(e) => handleInstructionChange(item.name, e.target.value)}
+                />
               </div>
             ))}
+          </div>
+        </div>
+      ))}
+      
+      <div id="blank_box" className='bg-transparent py-10 w-full'></div>
 
-            <div className="text-center mb-5">
-              <button onClick={handleSubmit} className="flex flex-row btn bg-yellow-300">
-                <Send className="mr-2 h-4 w-4" />
-                Generate Invoice and Send
-              </button>
-            </div>
-          </>
-        )}
+      {/* Add to Cart Button */}
+      <div className="fixed bottom-4 left-0 right-0 flex justify-center">
+        <button
+          className="bg-green-500 text-white py-2 px-4 rounded-lg flex items-center gap-2"
+          onClick={handleAddToCart}
+        >
+          <AiOutlineShoppingCart size={24} />
+          Add to Cart
+        </button>
       </div>
 
-      <Footer />
+      {/* Cart Modal */}
+      {isModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h2 className="text-xl font-bold mb-4">Cart</h2>
+            {cart.length > 0 ? (
+              cart.map((cartItem) => (
+                <div key={cartItem.name} className="flex justify-between mb-2">
+                  <div>
+                    <span className="font-semibold">{cartItem.name}</span>
+                    <span className="text-gray-500"> x {cartItem.quantity}</span>
+                    {cartItem.instructions && (
+                      <p className="text-sm text-gray-400">Instructions: {cartItem.instructions}</p>
+                    )}
+                  </div>
+                  <div className="text-right font-semibold">{cartItem.quantity}</div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">Your cart is empty</p>
+            )}
+            <div className="modal-action">
+              <button
+                className="btn"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default CateringOrder;
+export default OrderPage;

@@ -1,24 +1,41 @@
 "use client";
 
+import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+
+const Image = dynamic(() => import('next/image'));
 
 const BackgroundSlideshow = () => {
-  const images = [
-    '/1.jpg',
-    '/2.jpg',
-  ];
-
+  const images = ['/1.jpg', '/2.jpg'];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    const preloadImages = () => {
+      images.forEach((src) => {
+        const img = new window.Image();
+        img.src = src;
+      });
+      setIsLoaded(true);
+    };
+    preloadImages();
+  }, [images]);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
     }, 5000);
+
     return () => clearInterval(interval);
-  }, [images.length]);
+  }, [images.length, isLoaded]);
+
+  if (!isLoaded) {
+    return <div className="w-full h-screen flex items-center justify-center text-white">Loading...</div>;
+  }
 
   return (
     <div className="w-full h-screen overflow-hidden z-0">
@@ -33,12 +50,11 @@ const BackgroundSlideshow = () => {
             fill
             quality={100}
             className="animate-zoom object-cover"
-            priority={true}
+            priority={index === 0}
           />
         </div>
       ))}
       <div className="absolute inset-0 bg-black opacity-70"></div>
-
     </div>
   );
 };

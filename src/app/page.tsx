@@ -46,7 +46,7 @@ export default function Home() {
 
         <h1 className='text-6xl font-bold mb-10'>About Us</h1>
         <p className='text-2xl font-semibold'>
-          At Centro AL VOLO, we bring Italy's vibrant flavors right to your plate! Whether you're hosting an event or dining in our restaurant, we serve authentic sapori italiani (Italian tastes) crafted with passion. From handmade pasta to wood-fired pizzas, every dish is a celebration of Italy’s finest culinary traditions.
+          At Centro Italian Catering, we bring Italy's vibrant flavors right to your plate! Whether you're hosting an event or dining in our restaurant, we serve authentic sapori italiani (Italian tastes) crafted with passion. From handmade pasta to wood-fired pizzas, every dish is a celebration of Italy’s finest culinary traditions.
 
           Perfect for catering or enjoying a cozy meal, we promise to deliver gusti genuini (genuine flavors) that transport you to the heart of Italy.
         </p>
