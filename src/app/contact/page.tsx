@@ -27,12 +27,24 @@ const ContactPage = () => {
   };
 
   const handleMapImageRedirect = () => {
-    window.open('https://maps.app.goo.gl/HKMGrMCqzZmEWtgFA', '_blank', 'noopener,noreferrer');
+    window.open('https://maps.app.goo.gl/eJi4B8chyELJaVHJ7', '_blank', 'noopener,noreferrer');
   };
 
   return (
     <div className="bg-[#d7cece] font-semibold">
-      <Navbar />
+      {/* Banner */}
+      <div id="banner" className="relative h-[300px] sm:h-[416px] w-full">
+        <div className="absolute top-0 left-0 w-full z-20">
+          <Navbar />
+        </div>
+        <Image src="/banner.jpg" alt="banner" fill priority className="object-cover" />
+        <div className="absolute inset-0 bg-black opacity-70"></div>
+
+        <div className="absolute inset-0 flex items-center justify-center text-white text-4xl sm:text-6xl font-bold">
+          Contact Us
+        </div>
+      </div>
+
       <div className="flex flex-col md:flex-row justify-center items-center h-auto md:h-screen font-italiana font-semibold p-4 md:p-0">
 
         {/* Contact Information Section */}

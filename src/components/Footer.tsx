@@ -32,7 +32,7 @@ const Footer = () => {
           </div>
         </Link>
 
-        <Link href={"https://maps.app.goo.gl/HKMGrMCqzZmEWtgFA"} target='_blank' rel='noopener noreferrer'>
+        <Link href={"https://maps.app.goo.gl/eJi4B8chyELJaVHJ7"} target='_blank' rel='noopener noreferrer'>
           <div className={`rounded-lg flex justify-center items-center w-12 h-12 bg-[#E49B0F]`} title='Location'>
             <FaLocationDot className="text-3xl cursor-pointer" />
           </div>

@@ -7,9 +7,9 @@ import JSConfetti from "js-confetti";
 
 import { menu as menuData } from "@/lib/MenuItems";
 import Navbar from '@/components/Navbar/Navbar';
-import Map from "@/../public/map.png";
 
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import Footer from '@/components/Footer';
 
 interface CartItem {
   name: string;
@@ -126,7 +126,7 @@ const OrderPage = () => {
       <div id="blank_box" className='bg-transparent py-10 w-full'></div>
 
       {/* Add to Cart Button */}
-      <div className="fixed bottom-4 left-0 right-0 flex justify-center">
+      <div className="fixed bottom-80 sm:bottom-64 left-0 right-0 flex justify-center z-50">
         <button
           className="bg-green-500 text-white py-2 px-4 rounded-lg flex items-center gap-2"
           onClick={handleAddToCart}
@@ -135,6 +135,9 @@ const OrderPage = () => {
           Add to Cart
         </button>
       </div>
+
+
+      <Footer />
 
       {/* Cart Modal */}
       <dialog id="cart_modal" className="modal modal-bottom sm:modal-middle">
@@ -168,6 +171,8 @@ const OrderPage = () => {
         </form>
       </dialog>
 
+      {/* Contact Detail Modal */}
+
       {/* Thank You Modal */}
       <dialog id="thank_you_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
@@ -190,8 +195,8 @@ const OrderPage = () => {
           </div>
 
           <div className='text-3xl mt-5 mb-3'>
-              <h1>Visit Us</h1>
-              <Image src={"/map.png"} alt='map' width={600} height={200} className='object-contain' unoptimized />
+            <h1>Visit Us</h1>
+            <Image src={"/map.png"} alt='map' width={600} height={200} className='object-contain' unoptimized />
           </div>
         </div>
       </dialog>
