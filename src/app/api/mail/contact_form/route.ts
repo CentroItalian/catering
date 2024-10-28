@@ -26,8 +26,8 @@ export async function POST(request: Request) {
   const mailOptions = {
     from: `${name} <${email}>`,
     to: 'akshat00jain@gmail.com',
-    subject: 'Contact Form Submission',
-    html: ContactFormTemplate(name, email, 'Reaching Out', message),
+    subject: subject,
+    html: ContactFormTemplate(name, email, subject, message),
   };
 
   try {
