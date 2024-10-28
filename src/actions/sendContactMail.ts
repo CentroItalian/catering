@@ -5,6 +5,8 @@ import { ContactFormTemplate } from '@/lib/mail/templates/ContactFormTemplate';
 
 export default async function sendContactMail(formData: any) {
 
+    console.log("================ Sending Mail ================");
+
     sendMail(
         {
             from: `${formData.name} | ${formData.email}`, 
