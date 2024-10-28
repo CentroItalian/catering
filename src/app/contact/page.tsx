@@ -7,10 +7,9 @@ import React, { useState } from 'react';
 import { z } from 'zod';
 
 import Map from "@/../public/map.png";
-import { FaUser, FaPhone } from "react-icons/fa";
+import { FaUser, FaPhone, FaHeading } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import Image from 'next/image';
-import sendContactMail from '@/actions/sendContactMail';
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -18,17 +17,19 @@ const contactSchema = z.object({
   phone: z
     .string()
     .regex(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone must be in the format (123) 456-7890"),
+  subject: z.string().min(1, "Subject is required"),
   message: z.string().min(1, "Message is required"),
 });
 
 const ContactPage = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: "", message: '' });
   const [errors, setErrors] = useState<FormErrors>({});
 
   interface FormData {
     name: string;
     email: string;
     phone: string;
+    subject: string;
     message: string;
   }
 
@@ -36,6 +37,7 @@ const ContactPage = () => {
     name?: { _errors: string[] };
     email?: { _errors: string[] };
     phone?: { _errors: string[] };
+    subject?: { _errors: string[] };
     message?: { _errors: string[] };
   }
 
@@ -69,10 +71,17 @@ const ContactPage = () => {
       return;
     }
 
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     setErrors({});
     (document.getElementById('thank_you_modal') as HTMLDialogElement).showModal();
-    await sendContactMail(formData);
+    await fetch(`/api/mail/contact_form/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CONTACT_FORM_TOKEN}`,
+      },
+      body: JSON.stringify(formData),
+    });
   };
 
   const handleMapImageRedirect = () => {
@@ -110,7 +119,7 @@ const ContactPage = () => {
               Phone: 202-248-0389
             </p>
 
-              <Image src={Map} alt="map" className="rounded-lg w-full md:w-3/4 cursor-pointer" onClick={() => handleMapImageRedirect()} />
+            <Image src={Map} alt="map" className="rounded-lg w-full md:w-3/4 cursor-pointer" onClick={() => handleMapImageRedirect()} />
           </div>
         </div>
 
@@ -128,7 +137,6 @@ const ContactPage = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                required
               />
             </label>
             {errors.name && <p className="text-red-500 text-sm">{errors.name._errors[0]}</p>}
@@ -142,7 +150,6 @@ const ContactPage = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                required
               />
             </label>
             {errors.email && <p className="text-red-500 text-sm">{errors.email._errors[0]}</p>}
@@ -156,10 +163,22 @@ const ContactPage = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                required
               />
             </label>
             {errors.phone && <p className="text-red-500 text-sm">{errors.phone._errors[0]}</p>}
+
+            <label htmlFor="subject" className="input input-bordered flex items-center gap-2">
+              <FaHeading />
+              <input
+                type="text"
+                className="grow"
+                placeholder="Subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+              />
+            </label>
+            {errors.subject && <p className="text-red-500 text-sm">{errors.subject._errors[0]}</p>}
 
             <label htmlFor='message' className="form-control">
               <div className="label">
@@ -171,7 +190,6 @@ const ContactPage = () => {
                 placeholder="Message"
                 value={formData.message}
                 onChange={handleChange}
-                required
               />
             </label>
             {errors.message && <p className="text-red-500 text-sm">{errors.message._errors[0]}</p>}
