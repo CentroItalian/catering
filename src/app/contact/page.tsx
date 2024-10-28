@@ -120,8 +120,7 @@ const ContactPage = () => {
         {/* Contact Information Section */}
         <div className="flex flex-col justify-center items-center w-full md:w-1/2 text-left md:pl-12 mb-6 md:mb-0">
           <div className="text-black text-center md:text-left">
-            <h1 className="text-4xl md:text-6xl font-bold mb-3 md:mb-5">Contact Us</h1>
-            <h1 className="text-3xl md:text-4xl font-bold">Centro Italian Catering</h1>
+            <h1 className="text-3xl md:text-5xl font-bold">Centro Italian Catering</h1>
 
             <h1 className="text-lg md:text-xl object-contain">
               905 Brentwood Rd NE, Washington, DC 20018
@@ -138,7 +137,7 @@ const ContactPage = () => {
         {/* Contact Form Section */}
         <div className="flex flex-col justify-center items-center w-full md:max-w-md p-4 md:p-6 bg-base-100 shadow-xl rounded-lg text-black">
           <form className="flex flex-col gap-4 w-full" onSubmit={handleSubmit}>
-            <h1 className="text-3xl md:text-4xl font-bold text-center">Centro Italian Catering</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-center">How can we help?</h1>
 
             <label htmlFor="name" className="input input-bordered flex items-center gap-2">
               <FaUser />

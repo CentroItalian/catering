@@ -130,8 +130,8 @@ export const menu: Menu[] = [
         items: [
             {
                 category: "Pasta For All",
-                name: "Chicken Fettuccine Alfredo",
-                description: "Juicy grilled chicken served over tender fettuccine, coated in a velvety Alfredo sauce made with cream, butter, and parmesan",
+                name: "SHRIMP COCKTAIL",
+                description: "Juicy grilled chicken served over tender fettuccine, coated in a velvety Alfredo sauce made with cream, butter, and parmesan. Garnished with fresh parsley and a hint of cracked black pepper, this dish offers a perfect balance of creamy richness and savory flavors -",
                 serves: "Pan Serves 8-10"
             },
             {
@@ -144,6 +144,12 @@ export const menu: Menu[] = [
                 category: "Pasta For All",
                 name: "Penne a la Vodka",
                 description: "Al dente penne pasta tossed in a creamy vodka-infused tomato sauce with a touch of cream",
+                serves: "Pan Serves 8-10"
+            },
+            {
+                category: "Pasta For All",
+                name: "CHICKEN, PENNE, PESTO",
+                description: "Grilled chicken breast tossed with perfectly al dente penne pasta, coated in a fresh basil pesto sauce made with pine nuts, parmesan, and extra virgin olive oil. Refreshing and aromatic!",
                 serves: "Pan Serves 8-10"
             },
         ]
@@ -188,6 +194,18 @@ export const menu: Menu[] = [
                 description: "Pan-seared salmon filet drizzled with a zesty lemon butter sauce. Served atop a bed of vibrant sautéed spinach",
                 serves: "Pan Serves 8-10"
             },
+            {
+                category: "From Land To Sea",
+                name: "OVEN ROASTED, LEMON HERBACEOUS CHICKEN LEG QUARTERS",
+                description: "Juicy chicken leg quarters marinated in a fragrant blend of fresh herbs, zesty lemon juice, and garlic, then oven-roasted to golden perfection. Each piece boasts a crispy skin and tender, succulent meat infused with vibrant flavors",
+                serves: "Pan Serves 8-10"
+            },
+            {
+                category: "From Land To Sea",
+                name: "JUMBO LUMP CRAB CAKES",
+                description: "Juicy grilled chicken served over tender fettuccine, coated in a velvety Alfredo sauce made with cream, butter, and parmesan. Garnished with fresh parsley and a hint of cracked black pepper, this dish offers a perfect balance of creamy richness and savory flavors",
+                serves: "Pan Serves 8-10"
+            },
         ]
     },
     // Entrees
@@ -212,6 +230,25 @@ export const menu: Menu[] = [
                 description: "Pan-seared chicken breasts simmered in a rich Marsala wine sauce, complemented by sautéed mushrooms and shallots",
                 serves: "Pan Serves 8-10"
             },
+            {
+                category: "Entrees",
+                name: "CHICKEN FRANCESE",
+                description: "Tender chicken breasts lightly coated in a Parmesan and herb crust, baked to a golden brown and finished in a luscious lemon-butter sauce garnished with fresh Italian parsley",
+                serves: "Pan Serves 8-10"
+            },
+            {
+                category: "Entrees",
+                name: "SHRIMP SCAMPI",
+                description: "Succulent shrimp sautéed to perfection in a rich garlic butter sauce, infused with a splash of white wine and a hint of lemon zest tossed with perfectly al dente linguini ",
+                serves: "Pan Serves 8-10"
+            },
+            {
+                category: "Entrees",
+                name: "SAUSAGE SICILIAN",
+                description: "Authentic Italian sausage, pan-seared to perfection, then simmered with bell peppers, onions, and a robust marinara sauce",
+                serves: "Pan Serves 8-10"
+            },
+            
         ]
     },
     // Sandwiches
@@ -228,6 +265,24 @@ export const menu: Menu[] = [
                 category: "Sandwiches",
                 name: "3-Foot Italian Sub",
                 description: "A giant, shareable delight featuring layers of savory genoa salami, capicola, and ham, piled high on a freshly baked hoagie roll",
+                serves: "Serves 8-10"
+            },
+            {
+                category: "Sandwiches",
+                name: "CHICKEN PARM SUB",
+                description: "Crispy breaded chicken cutlet, smothered in rich marinara sauce and topped with melted mozzarella cheese, all nestled in a soft, toasted sub roll",
+                serves: "Serves 8-10"
+            },
+            {
+                category: "Sandwiches",
+                name: "CAPRESE",
+                description: "fresh basil, mozzarella, and tomato on a fresh baked sub roll topped with a homemade balsamic dressing",
+                serves: "Serves 8-10"
+            },
+            {
+                category: "Sandwiches",
+                name: "EGGPLANT PARM SUB",
+                description: "Layers of crispy, breaded eggplant slices, generously topped with marinara sauce and melted mozzarella cheese, all tucked inside a freshly toasted sub roll",
                 serves: "Serves 8-10"
             },
         ]
@@ -252,6 +307,12 @@ export const menu: Menu[] = [
                 category: "Desserts",
                 name: "Lemon Pound Cake",
                 description: "A moist and buttery pound cake, crafted from scratch using the finest ingredients and zesty lemon juice",
+                serves: "Serves 10"
+            },
+            {
+                category: "Desserts",
+                name: "ASSORTED COOKIE AND CHOCOLATE BROWNIE PLATTER",
+                description: "fresh baked assorted chocolate chip, oatmeal raisin, and sugar cookies cut and half and placed on a platter top with fresh baked, quartered chocolate brownies",
                 serves: "Serves 10"
             },
         ]

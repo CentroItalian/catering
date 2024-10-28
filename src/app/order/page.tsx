@@ -20,6 +20,7 @@ interface CartItem {
 const OrderPage = () => {
   const [order, setOrder] = useState<{ [key: string]: { quantity: number; instructions: string } }>({});
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartQuantity, setCartQuantity] = useState(0);
   const [orderType, setOrderType] = useState<'pickup' | 'delivery'>('pickup');
   const [isCartEmpty, setIsCartEmpty] = useState(cart.length === 0);
   const [buttonStyle, setButtonStyle] = useState<{ position: 'fixed' | 'absolute', bottom: number }>({
@@ -68,6 +69,13 @@ const OrderPage = () => {
   }, []);
 
   const handleQuantityChange = (itemName: string, increment: boolean) => {
+
+    if (increment) {
+      setCartQuantity((prevQuantity) => prevQuantity + 1);
+    } else {
+      setCartQuantity((prevQuantity) => Math.max(0, prevQuantity - 1));
+    }
+
     setOrder((prevOrder) => {
       const currentQuantity = prevOrder[itemName]?.quantity || 0;
       const newQuantity = increment ? currentQuantity + 1 : Math.max(0, currentQuantity - 1);
@@ -90,7 +98,7 @@ const OrderPage = () => {
     (document.getElementById('cart_modal') as HTMLDialogElement).showModal()
   };
 
-  const handleSubmitOrder = (e: React.FormEvent) => {
+  const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setCart([]);
@@ -101,6 +109,15 @@ const OrderPage = () => {
     });
     (document.getElementById('user_details_modal') as HTMLDialogElement).close();
     (document.getElementById('thank_you_modal') as HTMLDialogElement).showModal();
+
+    await fetch('/api/mail/order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CONTACT_FORM_TOKEN}`,
+      },
+      body: JSON.stringify({ name: 'Centro Italian Catering', email: 'test@mail.com', cart }),
+    });
   };
 
   return (
@@ -119,14 +136,14 @@ const OrderPage = () => {
 
       {/* Menu */}
       {menuData.map((menu) => (
-        <div key={menu.category} className="mt-6 p-4">
+        <div key={menu.category} className="mt-6 p-10">
           <h2 className="text-5xl font-bold pb-2">{menu.category}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {menu.items.map((item) => (
               <div key={item.name} className="border p-4 rounded-lg bg-white">
                 <h3 className="text-xl font-semibold">{item.name}</h3>
                 <p className="text-gray-600">{item.description}</p>
-                <p className="text-gray-500">Serves: {item.serves}</p>
+                <p className="text-gray-500">{item.serves}</p>
 
                 <div className="flex items-center mt-2">
                   <button
@@ -163,7 +180,7 @@ const OrderPage = () => {
         className="left-0 right-0 z-50"
         style={{
           position: buttonStyle.position,
-          bottom: buttonStyle.position === 'absolute' ? buttonStyle.bottom + 5 : 5
+          bottom: buttonStyle.position === 'absolute' ? buttonStyle.bottom + 10 : 10
         }}
       >
         <div className="max-w-7xl mx-auto flex justify-center">
@@ -172,7 +189,7 @@ const OrderPage = () => {
             onClick={handleAddToCart}
           >
             <AiOutlineShoppingCart size={24} />
-            Add to Cart
+            Add to Cart {`( ${cartQuantity} )`}
           </button>
         </div>
       </div>
@@ -229,7 +246,7 @@ const OrderPage = () => {
       {/* User Details Modal */}
       <dialog id="user_details_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box font-semibold">
-          <h2 className="text-2xl font-bold mb-4">Place Order</h2>
+          {/* <h2 className="text-2xl font-bold mb-4">Order Summary</h2> */}
           <form onSubmit={handleSubmitOrder}>
             <div className="flex flex-col gap-3 m-3">
 
@@ -290,7 +307,6 @@ const OrderPage = () => {
                   {/* Address fields */}
                   <input type="text" placeholder="Street Address" name='address' className="input border border-black" required />
                   <input type="text" placeholder="City" name="city" className="input border border-black" required />
-                  <input type="number" placeholder="ZIP Code" name='zip_code' className="input border border-black" required />
 
                   {/* Dropdown for State */}
                   <select className="select border border-black font-semibold" name='state' defaultValue={"state"}>
@@ -347,12 +363,16 @@ const OrderPage = () => {
                     <option value="WI" className='font-semibold'>Wisconsin</option>
                     <option value="WY" className='font-semibold'>Wyoming</option>
                   </select>
+                  <input type="number" placeholder="ZIP Code" name='zip_code' className="input border border-black" required />
                 </div>
               )}
             </div>
+            
+            <div className='flex flex-row justify-center items-center'>
+            <button className="btn " type='button' onClick={() => (document.getElementById('user_details_modal') as HTMLDialogElement).close()}>Order More</button>
+            <button className="btn ml-5 btn-success">Place Order</button>
+            </div>
 
-            <button className="btn btn-success">Submit</button>
-            <button className="btn ml-5" type='button' onClick={() => (document.getElementById('user_details_modal') as HTMLDialogElement).close()}>Continue Order</button>
           </form>
         </div>
       </dialog>
