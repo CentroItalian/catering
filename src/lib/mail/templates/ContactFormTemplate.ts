@@ -1,4 +1,4 @@
-export function ContactFormTemplate(name: String, email: String, subject: String, message: String) {
+export function ContactFormTemplate(name: String, email: String, subject: String, message: String, phone: String) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,6 +50,10 @@ export function ContactFormTemplate(name: String, email: String, subject: String
         <div class="form-group">
             <div class="label">Email:</div>
             <div class="value">${email}</div>
+        </div>
+        <div class="form-group">
+            <div class="label">Phone:</div>
+            <div class="value">${phone}</div>
         </div>
         <div class="form-group">
             <div class="label">Subject:</div>

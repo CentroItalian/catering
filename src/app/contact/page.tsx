@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { z } from 'zod';
 
 import Map from "@/../public/map.png";
-import { FaUser, FaPhone, FaHeading } from "react-icons/fa";
+import { FaUser, FaPhone, FaPen } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import Image from 'next/image';
 
@@ -74,7 +74,19 @@ const ContactPage = () => {
     setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     setErrors({});
     (document.getElementById('thank_you_modal') as HTMLDialogElement).showModal();
+
+    // Send email to the user
     await fetch(`/api/mail/contact_form/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CONTACT_FORM_TOKEN}`,
+      },
+      body: JSON.stringify(formData),
+    });
+
+    // Add the user to the Google Sheet
+    await fetch(`/api/sheets/contact/`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -89,7 +101,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="bg-[#CBC3E3] font-semibold">
+    <div className="bg-[#d7cece] font-semibold">
       {/* Banner */}
       <div id="banner" className="relative h-[300px] sm:h-[416px] w-full">
         <div className="absolute top-0 left-0 w-full z-20">
@@ -168,7 +180,7 @@ const ContactPage = () => {
             {errors.phone && <p className="text-red-500 text-sm">{errors.phone._errors[0]}</p>}
 
             <label htmlFor="subject" className="input input-bordered flex items-center gap-2">
-              <FaHeading />
+              <FaPen />
               <input
                 type="text"
                 className="grow"

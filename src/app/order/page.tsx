@@ -92,7 +92,7 @@ const OrderPage = () => {
 
   const handleSubmitOrder = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Order submitted', cart.length);
+
     setCart([]);
     setOrder({});
     confettiRef.current?.addConfetti({
@@ -186,7 +186,7 @@ const OrderPage = () => {
       {/* Cart Modal */}
       <dialog id="cart_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
-          <h2 className="text-xl font-bold mb-4">Cart</h2>
+          <h2 className="text-2xl font-bold mb-4">Cart</h2>
           {cart.length > 0 ? (
             cart.map((cartItem) => (
               <div key={cartItem.name} className="flex justify-between mb-2">
@@ -229,110 +229,126 @@ const OrderPage = () => {
       {/* User Details Modal */}
       <dialog id="user_details_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box font-semibold">
-          <h2 className="text-xl font-bold mb-4">User Details</h2>
+          <h2 className="text-2xl font-bold mb-4">Place Order</h2>
           <form onSubmit={handleSubmitOrder}>
             <div className="flex flex-col gap-3 m-3">
 
               {/* Radio buttons for Pick-up and Delivery */}
               <div className="form-control">
-                <label className="label cursor-pointer">
-                  <span className="label-text">Pick-up</span>
-                  <input
-                    type="radio"
-                    name="order_type"
-                    value="pickup"
-                    className="radio checked:bg-blue-500"
-                    onChange={(e) => setOrderType(e.target.value as 'pickup' | 'delivery')}
-                    checked={orderType === 'pickup'}
-                  />
-                </label>
-                <label className="label cursor-pointer">
-                  <span className="label-text">Delivery</span>
-                  <input
-                    type="radio"
-                    name="order_type"
-                    value="delivery"
-                    className="radio checked:bg-blue-500"
-                    onChange={(e) => setOrderType(e.target.value as 'pickup' | 'delivery')}
-                    checked={orderType === 'delivery'}
-                  />
-                </label>
-              </div>
-
-              {/* Conditional rendering based on radio selection */}
-              {orderType === "pickup" && (
-                <div className="flex justify-center">
-                  <Image src={"/map.png"} alt='map' width={600} height={200} className='object-contain rounded-lg mb-5' unoptimized />
+                <div className='flex justify-center items-center mb-3'>
+                  <div className="flex items-center justify-center p-2 bg-gray-100 rounded-full w-max ">
+                    <div
+                      onClick={() => setOrderType('pickup')}
+                      className={`px-4 py-2 rounded-full cursor-pointer transition-all ${orderType === 'pickup' ? 'bg-white text-black font-semibold' : 'text-gray-500'
+                        }`}
+                    >
+                      Pickup
+                    </div>
+                    <div
+                      onClick={() => setOrderType('delivery')}
+                      className={`px-4 py-2 rounded-full cursor-pointer transition-all ${orderType === 'delivery' ? 'bg-white text-black font-semibold' : 'text-gray-500'
+                        }`}
+                    >
+                      Delivery
+                    </div>
+                  </div>
                 </div>
-              )}
+
+
+                <div hidden={orderType == "delivery"}>
+                  <p className='text-lg font-semibold'><u>Pickup Address</u>:</p>
+                  <div className='pl-4'>
+                    <p>Centro Italian Catering</p>
+                    <p>905 Brentwood Rd NE, Washington, DC 20018</p>
+                    <p>Phone: 202-248-0389</p>
+                  </div>
+                </div>
+
+                {/* Conditional rendering based on radio selection */}
+                {orderType === "pickup" && (
+                  <div className="flex justify-center">
+                    <Image onClick={() => window.open("https://maps.app.goo.gl/eJi4B8chyELJaVHJ7", "_blank", "noopener noreferrer")} src={"/map.png"} alt='map' width={600} height={200} className='object-contain rounded-lg mb-5 cursor-pointer' unoptimized />
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-3">
+                  <input type="text" hidden={orderType == "delivery"} placeholder="Name *" name='name' className="input border border-black" required />
+                  <input type="text" hidden={orderType == "delivery"} placeholder="Organization" name='organization' className="input border border-black" />
+                  <input type="email" hidden={orderType == "delivery"} placeholder="Email *" name='email' className="input border border-black" required />
+                  <input type="tel" hidden={orderType == "delivery"} placeholder="Phone *" name='phone' className="input border border-black" required />
+                </div>
+              </div>
 
               {orderType === "delivery" && (
                 <div className="flex flex-col gap-3">
+                  {/* User details fields */}
+                  <input type="text" placeholder="Name *" name='name' className="input border border-black" required />
+                  <input type="text" placeholder="Organization" name='organization' className="input border border-black" />
+                  <input type="email" placeholder="Email *" name='email' className="input border border-black" required />
+                  <input type="tel" placeholder="Phone *" name='phone' className="input border border-black" required />
+
+                  {/* Address fields */}
                   <input type="text" placeholder="Street Address" name='address' className="input border border-black" required />
                   <input type="text" placeholder="City" name="city" className="input border border-black" required />
                   <input type="number" placeholder="ZIP Code" name='zip_code' className="input border border-black" required />
 
                   {/* Dropdown for State */}
-                  <select className="select border border-black font-semibold" name='state' required>
-                    <option value="AL">Alabama</option>
-                    <option value="AK">Alaska</option>
-                    <option value="AZ">Arizona</option>
-                    <option value="AR">Arkansas</option>
-                    <option value="CA">California</option>
-                    <option value="CO">Colorado</option>
-                    <option value="CT">Connecticut</option>
-                    <option value="DE">Delaware</option>
-                    <option value="DC">District Of Columbia</option>
-                    <option value="FL">Florida</option>
-                    <option value="GA">Georgia</option>
-                    <option value="HI">Hawaii</option>
-                    <option value="ID">Idaho</option>
-                    <option value="IL">Illinois</option>
-                    <option value="IN">Indiana</option>
-                    <option value="IA">Iowa</option>
-                    <option value="KS">Kansas</option>
-                    <option value="KY">Kentucky</option>
-                    <option value="LA">Louisiana</option>
-                    <option value="ME">Maine</option>
-                    <option value="MD">Maryland</option>
-                    <option value="MA">Massachusetts</option>
-                    <option value="MI">Michigan</option>
-                    <option value="MN">Minnesota</option>
-                    <option value="MS">Mississippi</option>
-                    <option value="MO">Missouri</option>
-                    <option value="MT">Montana</option>
-                    <option value="NE">Nebraska</option>
-                    <option value="NV">Nevada</option>
-                    <option value="NH">New Hampshire</option>
-                    <option value="NJ">New Jersey</option>
-                    <option value="NM">New Mexico</option>
-                    <option value="NY">New York</option>
-                    <option value="NC">North Carolina</option>
-                    <option value="ND">North Dakota</option>
-                    <option value="OH">Ohio</option>
-                    <option value="OK">Oklahoma</option>
-                    <option value="OR">Oregon</option>
-                    <option value="PA">Pennsylvania</option>
-                    <option value="RI">Rhode Island</option>
-                    <option value="SC">South Carolina</option>
-                    <option value="SD">South Dakota</option>
-                    <option value="TN">Tennessee</option>
-                    <option value="TX">Texas</option>
-                    <option value="UT">Utah</option>
-                    <option value="VT">Vermont</option>
-                    <option value="VA">Virginia</option>
-                    <option value="WA">Washington</option>
-                    <option value="WV">West Virginia</option>
-                    <option value="WI">Wisconsin</option>
-                    <option value="WY">Wyoming</option>
+                  <select className="select border border-black font-semibold" name='state' defaultValue={"state"}>
+                    <option hidden disabled value="state"> Select your state </option>
+                    <option value="AL" className='font-semibold'>Alabama</option>
+                    <option value="AK" className='font-semibold'>Alaska</option>
+                    <option value="AZ" className='font-semibold'>Arizona</option>
+                    <option value="AR" className='font-semibold'>Arkansas</option>
+                    <option value="CA" className='font-semibold'>California</option>
+                    <option value="CO" className='font-semibold'>Colorado</option>
+                    <option value="CT" className='font-semibold'>Connecticut</option>
+                    <option value="DE" className='font-semibold'>Delaware</option>
+                    <option value="DC" className='font-semibold'>District Of Columbia</option>
+                    <option value="FL" className='font-semibold'>Florida</option>
+                    <option value="GA" className='font-semibold'>Georgia</option>
+                    <option value="HI" className='font-semibold'>Hawaii</option>
+                    <option value="ID" className='font-semibold'>Idaho</option>
+                    <option value="IL" className='font-semibold'>Illinois</option>
+                    <option value="IN" className='font-semibold'>Indiana</option>
+                    <option value="IA" className='font-semibold'>Iowa</option>
+                    <option value="KS" className='font-semibold'>Kansas</option>
+                    <option value="KY" className='font-semibold'>Kentucky</option>
+                    <option value="LA" className='font-semibold'>Louisiana</option>
+                    <option value="ME" className='font-semibold'>Maine</option>
+                    <option value="MD" className='font-semibold'>Maryland</option>
+                    <option value="MA" className='font-semibold'>Massachusetts</option>
+                    <option value="MI" className='font-semibold'>Michigan</option>
+                    <option value="MN" className='font-semibold'>Minnesota</option>
+                    <option value="MS" className='font-semibold'>Mississippi</option>
+                    <option value="MO" className='font-semibold'>Missouri</option>
+                    <option value="MT" className='font-semibold'>Montana</option>
+                    <option value="NE" className='font-semibold'>Nebraska</option>
+                    <option value="NV" className='font-semibold'>Nevada</option>
+                    <option value="NH" className='font-semibold'>New Hampshire</option>
+                    <option value="NJ" className='font-semibold'>New Jersey</option>
+                    <option value="NM" className='font-semibold'>New Mexico</option>
+                    <option value="NY" className='font-semibold'>New York</option>
+                    <option value="NC" className='font-semibold'>North Carolina</option>
+                    <option value="ND" className='font-semibold'>North Dakota</option>
+                    <option value="OH" className='font-semibold'>Ohio</option>
+                    <option value="OK" className='font-semibold'>Oklahoma</option>
+                    <option value="OR" className='font-semibold'>Oregon</option>
+                    <option value="PA" className='font-semibold'>Pennsylvania</option>
+                    <option value="RI" className='font-semibold'>Rhode Island</option>
+                    <option value="SC" className='font-semibold'>South Carolina</option>
+                    <option value="SD" className='font-semibold'>South Dakota</option>
+                    <option value="TN" className='font-semibold'>Tennessee</option>
+                    <option value="TX" className='font-semibold'>Texas</option>
+                    <option value="UT" className='font-semibold'>Utah</option>
+                    <option value="VT" className='font-semibold'>Vermont</option>
+                    <option value="VA" className='font-semibold'>Virginia</option>
+                    <option value="WA" className='font-semibold'>Washington</option>
+                    <option value="WV" className='font-semibold'>West Virginia</option>
+                    <option value="WI" className='font-semibold'>Wisconsin</option>
+                    <option value="WY" className='font-semibold'>Wyoming</option>
                   </select>
                 </div>
               )}
-
-              {/* User details fields */}
-              <input type="text" placeholder="Name" name='name' className="input border border-black" />
-              <input type="email" placeholder="Email" name='email' className="input border border-black" />
-              <input type="tel" placeholder="Phone" name='phone' className="input border border-black" />
             </div>
 
             <button className="btn btn-success">Submit</button>

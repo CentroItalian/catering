@@ -62,6 +62,30 @@ export const menu: Menu[] = [
                 description: "Tender broccoli florets roasted to perfection with a generous drizzle of olive oil, infused with roasted garlic and a hint of lemon zest",
                 serves: "Pan Serves 8-10"
             },
+            {
+                category: "Starters & Sides",
+                name: "DICED FRUIT PLATTER",
+                description: "A Delightful Medley Of Roasted Brussels Sprouts, Sweet Corn, And Tender English Peas, Sautéed With Shallots And Fresh Herbs. This Vibrant Dish Creates A Perfect Balance Of Earthy And Sweet Flavors",
+                serves: "Pan Serves 8-10"
+            },
+            {
+                category: "Starters & Sides",
+                name: "BRUSSEL SPROUT, CORN, AND ENGLISH PEA SUCCOTASH",
+                description: "A delightful medley of roasted Brussels sprouts, sweet corn, and tender English peas, sautéed with shallots and fresh herbs. This vibrant dish creates a perfect balance of earthy and sweet flavors",
+                serves: "Pan Serves 8-10"
+            },
+            {
+                category: "Starters & Sides",
+                name: "GARLIC BREAD",
+                description: "Warm, crusty bread baked to golden perfection, brushed with a generous blend of melted butter, roasted garlic, and fresh parsley. Lightly toasted for a satisfying crunch and finished with a sprinkle of parmesan cheese. Perfectly fragrant and delicious, served with homemade tomato sauce on the side",
+                serves: "Pan Serves 8-10"
+            },
+            {
+                category: "Starters & Sides",
+                name: "SHRIMP COCKTAIL",
+                description: "Chilled Jumbo Shrimp, Perfectly Cooked And Served With A Zesty Homemade Cocktail Sauce, Bursting With The Tang Of Fresh Horseradish, Lemon, And A Touch Of Spice. Garnished With A Slice Of Lemon And Fresh Herbs.",
+                serves: "Pan Serves 8-10"
+            },
         ]
     },
     // Salads
@@ -84,6 +108,18 @@ export const menu: Menu[] = [
                 category: "Salads",
                 name: "Italian Garden Salad",
                 description: "Salad greens, tomatoes, cucumbers, and bell peppers served with homemade Italian vinaigrette",
+                serves: "Small serves 8-10, Medium serves 13-15, Large serves 18-20"
+            },
+            {
+                category: "Salads",
+                name: "CAPRESE SALAD",
+                description: "fresh basil, grape tomatoes, and mozzarella ovalini tossed together in a homemade balsamic dressing",
+                serves: "Small serves 8-10, Medium serves 13-15, Large serves 18-20"
+            },
+            {
+                category: "Salads",
+                name: "PASTA SALAD",
+                description: "tri-color rotini pasta, tomatoes, carrots, peppers, and feta cheese tossed in a homemade dressing",
                 serves: "Small serves 8-10, Medium serves 13-15, Large serves 18-20"
             },
         ]

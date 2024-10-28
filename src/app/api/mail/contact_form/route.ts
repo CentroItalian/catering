@@ -3,9 +3,7 @@ import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
 export async function POST(request: Request) {
-  const { name, email, message, subject } = await request.json();
-
-  console.log(email, name, message, subject);
+  const { name, email, message, subject, phone } = await request.json();
 
   const authHeader = request.headers.get('Authorization');
   const secretToken = process.env.CONTACT_FORM_TOKEN;
@@ -27,7 +25,7 @@ export async function POST(request: Request) {
     from: `${name} <${email}>`,
     to: 'akshat00jain@gmail.com',
     subject: subject,
-    html: ContactFormTemplate(name, email, subject, message),
+    html: ContactFormTemplate(name, email, subject, message, phone),
   };
 
   try {
