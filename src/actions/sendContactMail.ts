@@ -12,5 +12,9 @@ export default async function sendContactMail(formData: any) {
             subject: "Contact Form Submission",
             html: ContactFormTemplate(formData.name, formData.email, "Reaching Out", formData.message) 
         }
-    );
+    ).then(() => {
+        console.log("Mail Sent Successfully");
+    }).catch((err) => {
+        console.log("Error in sending mail", err);
+    });
 }
