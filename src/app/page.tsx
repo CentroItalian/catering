@@ -4,6 +4,8 @@ import Navbar from '@/components/Navbar/Navbar';
 import Link from 'next/link';
 import Image from 'next/image';
 
+import Logo from "@/../public/logos/logo_transparent.png"
+
 export default function Home() {
   return (
     <div data-theme="fantasy">
@@ -30,7 +32,7 @@ export default function Home() {
             </div> */}
             <div className="flex items-center justify-center">
               <Image
-                src="/logos/logo_transparent.png"
+                src={Logo}
                 width={400}
                 height={400}
                 alt="Centro Italian Catering"
