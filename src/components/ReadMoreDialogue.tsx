@@ -56,9 +56,12 @@ const ReadMoreDialogue: React.FC<ReadMoreDialogueProps> = ({ item_name, descript
           />
         </div>
 
-        <div className='flex justify-center items-center'>
-          <button className="btn text-white btn-success mt-4">Continue Ordering</button>
-        </div>
+        <form method="dialog">
+          <div className='flex justify-center items-center'>
+            <button className="btn text-white btn-success mt-4">Continue Ordering</button>
+          </div>
+        </form>
+
       </div>
       <form method="dialog" className="modal-backdrop">
         <button>close</button>
