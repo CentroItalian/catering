@@ -13,7 +13,7 @@ const NavLink: React.FC<NavLinkProps> = ({ name, route, onClick, pathname }) => 
 
   return (
     <div
-      className={`navbar-item text-3xl transition-all duration-300 ease-in-out font-italiana font-bold cursor-pointer ${
+      className={`navbar-item text-center text-3xl font-nunito transition-all duration-300 ease-in-out font-bold cursor-pointer ${
         isActive ? 'text-yellow-300' : 'text-white hover:text-yellow-300'
       }`}
       onClick={onClick}

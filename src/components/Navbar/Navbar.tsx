@@ -36,7 +36,7 @@ export default function Navbar() {
         <div className="navbar-start"></div>
 
         {/* Desktop Nav Links */}
-        <div className="hidden md:flex navbar-end gap-8 md:gap-20 mr-4 md:mr-10">
+        <div className="hidden md:flex navbar-end gap-8 md:gap-8 mr-4 md:mr-10 items-center justify-center">
           <NavLink name="Home" route="/" pathname={pathname} />
           <NavLink name="Order Online" route="/order" pathname={pathname} />
           <NavLink name="Menu" route="/menu" pathname={pathname} />

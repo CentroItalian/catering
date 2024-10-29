@@ -110,7 +110,7 @@ const ContactPage = () => {
         <Image src="/banner.jpg" alt="banner" fill priority className="object-cover" />
         <div className="absolute inset-0 bg-slate-700 opacity-70"></div>
 
-        <div className="absolute inset-0 flex gap-5 flex-col items-center justify-center text-white text-4xl sm:text-6xl font-bold">
+        <div className="absolute inset-0 flex gap-5 flex-col items-center justify-center text-white text-4xl sm:text-6xl font-medium font-yeseva">
           <Image
             src="/logos/logo_transparent.png"
             width={350}
@@ -124,10 +124,10 @@ const ContactPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-center items-center h-auto md:h-screen font-italiana font-semibold p-4 md:p-0">
+      <div className="flex flex-col md:flex-row justify-center items-center h-auto md:h-screen font-semibold p-4 md:p-0">
 
         {/* Contact Information Section */}
-        <div className="flex flex-col justify-center items-center w-full md:w-1/2 text-left md:pl-12 mb-6 md:mb-0">
+        <div className="flex flex-col justify-center items-center w-full md:w-1/2 text-left md:pl-12 mb-6 md:mb-0 font-nunito">
           <div className="text-black text-center md:text-left">
             <h1 className="text-3xl md:text-5xl font-bold">Centro Italian Catering</h1>
 

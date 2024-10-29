@@ -8,10 +8,41 @@ import JSConfetti from "js-confetti";
 import { menu as menuData } from "@/lib/MenuItems";
 import Navbar from '@/components/Navbar/Navbar';
 
+import { z } from "zod";
+
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Footer from '@/components/Footer';
 import ReadMoreDialogue from '@/components/ReadMoreDialogue';
 import ReturnToTop from '@/components/ReturnToTop';
+import OrderSummary from '@/components/Order/OrderSummary';
+import ThankYouModal from '@/components/Order/ThankYouModal';
+
+interface FormErrors {
+  name?: { _errors: string[] };
+  organization?: { _errors: string[] };
+  email?: { _errors: string[] };
+  phone?: { _errors: string[] };
+  date?: { _errors: string[] };
+  time?: { _errors: string[] };
+  address?: { _errors: string[] };
+  city?: { _errors: string[] };
+  state?: { _errors: string[] };
+  zip_code?: { _errors: string[] };
+
+}
+
+interface FormData {
+  name: string;
+  organization: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+}
 
 interface CartItem {
   name: string;
@@ -19,7 +50,35 @@ interface CartItem {
   instructions: string;
 }
 
+const orderSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  organization: z.string().optional(),
+  email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .regex(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone must be in the format (123) 456-7890"),
+  date: z.string().min(1, "Date is required"),
+  time: z.string().min(1, "Time is required"),
+  address: z.string().optional().or(z.literal("")),
+  city: z.string().optional().or(z.literal("")),
+  state: z.string().optional().or(z.literal("")),
+  zip_code: z.string().optional().or(z.literal("")),
+});
+
 const OrderPage = () => {
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    organization: '',
+    email: '',
+    phone: '',
+    date: '',
+    time: '',
+    address: '',
+    city: '',
+    state: 'state',
+    zip_code: '',
+  });
   const [order, setOrder] = useState<{ [key: string]: { quantity: number; instructions: string } }>({});
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartQuantity, setCartQuantity] = useState(0);
@@ -29,6 +88,8 @@ const OrderPage = () => {
     position: 'fixed',
     bottom: 0
   });
+
+  const now = new Date();
 
   const footerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -49,13 +110,13 @@ const OrderPage = () => {
         const viewportHeight = window.innerHeight;
 
         if (footerTop <= viewportHeight) {
-          // When footer is visible, position button absolutely above it
+
           setButtonStyle({
             position: 'absolute',
             bottom: footerRef.current.offsetHeight
           });
         } else {
-          // When footer is not visible, keep button fixed at bottom
+
           setButtonStyle({
             position: 'fixed',
             bottom: 0
@@ -69,6 +130,34 @@ const OrderPage = () => {
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleStateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prevData: FormData) => ({
+      ...prevData,
+      state: event.target.value,
+    }));
+  };
+
+
+  const onFormValueChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const { name, value } = e.target;
+
+    setFormData((prevData: FormData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    if (name === 'phone') {
+      const rawValue = value.replace(/\D/g, '');
+      let formattedPhone = rawValue;
+      if (rawValue.length >= 4 && rawValue.length <= 6) {
+        formattedPhone = `(${rawValue.slice(0, 3)}) ${rawValue.slice(3)}`;
+      } else if (rawValue.length >= 7) {
+        formattedPhone = `(${rawValue.slice(0, 3)}) ${rawValue.slice(3, 6)}-${rawValue.slice(6, 10)}`;
+      }
+      setFormData((prevData: FormData) => ({ ...prevData, phone: formattedPhone }));
+    }
+  }
 
   const handleQuantityChange = (itemName: string, increment: boolean) => {
 
@@ -103,13 +192,27 @@ const OrderPage = () => {
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const validationResult = orderSchema.safeParse(formData);
+
+    if (!validationResult.success) {
+      const formattedErrors = validationResult.error.format();
+      setErrors(formattedErrors);
+      return;
+    }
+
+    (document.getElementById('user_details_modal') as HTMLDialogElement).close();
+    (document.getElementById('order_summary_modal') as HTMLDialogElement).showModal();
+  };
+
+  const onConfirmOrder = async () => {
     setCart([]);
     setOrder({});
+    setCartQuantity(0);
     confettiRef.current?.addConfetti({
       confettiRadius: 5,
       confettiNumber: 300
     });
-    (document.getElementById('user_details_modal') as HTMLDialogElement).close();
+    (document.getElementById('order_summary_modal') as HTMLDialogElement).close();
     (document.getElementById('thank_you_modal') as HTMLDialogElement).showModal();
 
     await fetch('/api/mail/order', {
@@ -120,7 +223,7 @@ const OrderPage = () => {
       },
       body: JSON.stringify({ name: 'Centro Italian Catering', email: 'test@mail.com', cart }),
     });
-  };
+  }
 
   return (
     <div className="font-semibold bg-[#d7cece] relative">
@@ -165,6 +268,7 @@ const OrderPage = () => {
                             order={order}
                             setOrder={setOrder}
                             handleQuantityChange={handleQuantityChange}
+                            handleInstructionChange={handleInstructionChange}
                           />
                           <span className='text-blue-500 cursor-pointer' onClick={() => {
                             (document.getElementById(`read_more_dialogue_${item.name.replace(" ", "_")}`) as HTMLDialogElement).showModal();
@@ -278,7 +382,9 @@ const OrderPage = () => {
       {/* User Details Modal */}
       <dialog id="user_details_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box font-semibold">
-          {/* <h2 className="text-2xl font-bold mb-4">Order Summary</h2> */}
+          <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost fixed left-2 top-2 text-2xl">✕</button>
+          </form>
           <form onSubmit={handleSubmitOrder}>
             <div className="flex flex-col gap-3 m-3">
 
@@ -320,82 +426,145 @@ const OrderPage = () => {
                   </div>
                 )}
 
-                <div className="flex flex-col gap-3">
-                  <input type="text" hidden={orderType == "delivery"} placeholder="Name *" name='name' className="input border border-black" required />
-                  <input type="text" hidden={orderType == "delivery"} placeholder="Organization" name='organization' className="input border border-black" />
-                  <input type="email" hidden={orderType == "delivery"} placeholder="Email *" name='email' className="input border border-black" required />
-                  <input type="tel" hidden={orderType == "delivery"} placeholder="Phone *" name='phone' className="input border border-black" required />
-                </div>
+                {orderType == "pickup" && (
+                  <div className="flex flex-col gap-3">
+                    <label htmlFor='name' className='input input-bordered flex items-center gap-2'>
+                      <input type="text" placeholder="Name *" name='name' className="grow" value={formData.name} onChange={onFormValueChange} />
+                    </label>
+                    {errors.name && <p className="text-red-500 text-sm">{errors.name._errors[0]}</p>}
+
+                    <label htmlFor='organization' className='input input-bordered flex items-center gap-2'>
+                      <input type="text" placeholder="Organization" name='organization' value={formData.organization} onChange={onFormValueChange} />
+                    </label>
+                    {errors.organization && <p className="text-red-500 text-sm">{errors.organization._errors[0]}</p>}
+
+                    <label htmlFor='email' className='input input-bordered flex items-center gap-2'>
+                      <input type="email" placeholder="Email *" name='email' className="grow" value={formData.email} onChange={onFormValueChange} />
+                    </label>
+                    {errors.email && <p className="text-red-500 text-sm">{errors.email._errors[0]}</p>}
+
+                    <label htmlFor='phone' className='input input-bordered flex items-center gap-2'>
+                      <input type="text" placeholder="Phone *" name='phone' className="grow" value={formData.phone} onChange={onFormValueChange} />
+                    </label>
+                    {errors.phone && <p className="text-red-500 text-sm">{errors.phone._errors[0]}</p>}
+
+                    {/* Date Picker */}
+                    <label className="text-gray-700 font-semibold mb-1">Choose Date</label>
+                    <input
+                      type="date"
+                      name="date"
+                      className="input input-bordered border-2 border-gray-300 rounded-lg p-3 focus:border-primary bg-gray-50 hover:bg-gray-100 transition-all duration-150"
+                      value={formData.date} onChange={onFormValueChange}
+                      min={new Date().toISOString().split("T")[0]}
+                      max={new Date(now.setDate(now.getDate() + 14)).toISOString().split("T")[0]}
+                    />
+                    {errors.date && <p className="text-red-500 text-sm">{errors.date._errors[0]}</p>}
+
+                    {/* Time Picker */}
+                    <label className="text-gray-700 font-semibold mb-1">Choose Time</label>
+                    <input
+                      type="time"
+                      name="time"
+                      className="input input-bordered border-2 border-gray-300 rounded-lg p-3 focus:border-primary bg-gray-50 hover:bg-gray-100 transition-all duration-150"
+                      value={formData.time}
+                      onChange={onFormValueChange}
+                    />
+                    {errors.time && <p className="text-red-500 text-sm">{errors.time._errors[0]}</p>}
+                  </div>
+                )}
+
               </div>
 
               {orderType === "delivery" && (
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 min-w-fit">
                   {/* User details fields */}
-                  <input type="text" placeholder="Name *" name='name' className="input border border-black" required />
-                  <input type="text" placeholder="Organization" name='organization' className="input border border-black" />
-                  <input type="email" placeholder="Email *" name='email' className="input border border-black" required />
-                  <input type="tel" placeholder="Phone *" name='phone' className="input border border-black" required />
+                  <label htmlFor='name' className='input input-bordered flex items-center gap-2'>
+                    <input type="text" placeholder="Name *" name='name' className="grow" value={formData.name} onChange={onFormValueChange} />
+                  </label>
+
+                  <label htmlFor='organization' className='input input-bordered flex items-center gap-2'>
+                    <input type="text" placeholder="Organization" name='organization' className="grow" value={formData.organization} onChange={onFormValueChange} />
+                  </label>
+
+                  <label htmlFor='email' className='input input-bordered flex items-center gap-2'>
+                    <input type="email" placeholder="Email *" name='email' className="grow" value={formData.email} onChange={onFormValueChange} />
+                  </label>
+
+                  <label htmlFor='phone' className='input input-bordered flex items-center gap-2'>
+                    <input type="text" placeholder="Phone *" name='phone' className="grow" value={formData.phone} onChange={onFormValueChange} />
+                  </label>
 
                   {/* Address fields */}
-                  <input type="text" placeholder="Street Address" name='address' className="input border border-black" required />
-                  <input type="text" placeholder="City" name="city" className="input border border-black" required />
+                  <label htmlFor='address' className='input input-bordered flex items-center gap-2'>
+                    <input type="text" placeholder="Street Address" name='address' className="grow" value={formData.address} onChange={onFormValueChange} />
+                  </label>
+
+                  <label htmlFor='city' className='input input-bordered flex items-center gap-2'>
+                    <input type="text" placeholder="City" name="city" className="grow" value={formData.city} onChange={onFormValueChange} />
+                  </label>
 
                   {/* Dropdown for State */}
-                  <select className="select border border-black font-semibold" name='state' defaultValue={"state"}>
-                    <option hidden disabled value="state"> Select your state </option>
-                    <option value="AL" className='font-semibold'>Alabama</option>
-                    <option value="AK" className='font-semibold'>Alaska</option>
-                    <option value="AZ" className='font-semibold'>Arizona</option>
-                    <option value="AR" className='font-semibold'>Arkansas</option>
-                    <option value="CA" className='font-semibold'>California</option>
-                    <option value="CO" className='font-semibold'>Colorado</option>
-                    <option value="CT" className='font-semibold'>Connecticut</option>
-                    <option value="DE" className='font-semibold'>Delaware</option>
-                    <option value="DC" className='font-semibold'>District Of Columbia</option>
-                    <option value="FL" className='font-semibold'>Florida</option>
-                    <option value="GA" className='font-semibold'>Georgia</option>
-                    <option value="HI" className='font-semibold'>Hawaii</option>
-                    <option value="ID" className='font-semibold'>Idaho</option>
-                    <option value="IL" className='font-semibold'>Illinois</option>
-                    <option value="IN" className='font-semibold'>Indiana</option>
-                    <option value="IA" className='font-semibold'>Iowa</option>
-                    <option value="KS" className='font-semibold'>Kansas</option>
-                    <option value="KY" className='font-semibold'>Kentucky</option>
-                    <option value="LA" className='font-semibold'>Louisiana</option>
-                    <option value="ME" className='font-semibold'>Maine</option>
-                    <option value="MD" className='font-semibold'>Maryland</option>
-                    <option value="MA" className='font-semibold'>Massachusetts</option>
-                    <option value="MI" className='font-semibold'>Michigan</option>
-                    <option value="MN" className='font-semibold'>Minnesota</option>
-                    <option value="MS" className='font-semibold'>Mississippi</option>
-                    <option value="MO" className='font-semibold'>Missouri</option>
-                    <option value="MT" className='font-semibold'>Montana</option>
-                    <option value="NE" className='font-semibold'>Nebraska</option>
-                    <option value="NV" className='font-semibold'>Nevada</option>
-                    <option value="NH" className='font-semibold'>New Hampshire</option>
-                    <option value="NJ" className='font-semibold'>New Jersey</option>
-                    <option value="NM" className='font-semibold'>New Mexico</option>
-                    <option value="NY" className='font-semibold'>New York</option>
-                    <option value="NC" className='font-semibold'>North Carolina</option>
-                    <option value="ND" className='font-semibold'>North Dakota</option>
-                    <option value="OH" className='font-semibold'>Ohio</option>
-                    <option value="OK" className='font-semibold'>Oklahoma</option>
-                    <option value="OR" className='font-semibold'>Oregon</option>
-                    <option value="PA" className='font-semibold'>Pennsylvania</option>
-                    <option value="RI" className='font-semibold'>Rhode Island</option>
-                    <option value="SC" className='font-semibold'>South Carolina</option>
-                    <option value="SD" className='font-semibold'>South Dakota</option>
-                    <option value="TN" className='font-semibold'>Tennessee</option>
-                    <option value="TX" className='font-semibold'>Texas</option>
-                    <option value="UT" className='font-semibold'>Utah</option>
-                    <option value="VT" className='font-semibold'>Vermont</option>
-                    <option value="VA" className='font-semibold'>Virginia</option>
-                    <option value="WA" className='font-semibold'>Washington</option>
-                    <option value="WV" className='font-semibold'>West Virginia</option>
-                    <option value="WI" className='font-semibold'>Wisconsin</option>
-                    <option value="WY" className='font-semibold'>Wyoming</option>
-                  </select>
-                  <input type="number" placeholder="ZIP Code" name='zip_code' className="input border border-black" required />
+                  <label htmlFor='state'>
+                    <select className="select select-bordered w-full" name='state' value={formData.state} onChange={handleStateChange}>
+                      <option hidden disabled value="state"> Select your state </option>
+                      <option value="AL" className='font-semibold'>Alabama</option>
+                      <option value="AK" className='font-semibold'>Alaska</option>
+                      <option value="AZ" className='font-semibold'>Arizona</option>
+                      <option value="AR" className='font-semibold'>Arkansas</option>
+                      <option value="CA" className='font-semibold'>California</option>
+                      <option value="CO" className='font-semibold'>Colorado</option>
+                      <option value="CT" className='font-semibold'>Connecticut</option>
+                      <option value="DE" className='font-semibold'>Delaware</option>
+                      <option value="DC" className='font-semibold'>District Of Columbia</option>
+                      <option value="FL" className='font-semibold'>Florida</option>
+                      <option value="GA" className='font-semibold'>Georgia</option>
+                      <option value="HI" className='font-semibold'>Hawaii</option>
+                      <option value="ID" className='font-semibold'>Idaho</option>
+                      <option value="IL" className='font-semibold'>Illinois</option>
+                      <option value="IN" className='font-semibold'>Indiana</option>
+                      <option value="IA" className='font-semibold'>Iowa</option>
+                      <option value="KS" className='font-semibold'>Kansas</option>
+                      <option value="KY" className='font-semibold'>Kentucky</option>
+                      <option value="LA" className='font-semibold'>Louisiana</option>
+                      <option value="ME" className='font-semibold'>Maine</option>
+                      <option value="MD" className='font-semibold'>Maryland</option>
+                      <option value="MA" className='font-semibold'>Massachusetts</option>
+                      <option value="MI" className='font-semibold'>Michigan</option>
+                      <option value="MN" className='font-semibold'>Minnesota</option>
+                      <option value="MS" className='font-semibold'>Mississippi</option>
+                      <option value="MO" className='font-semibold'>Missouri</option>
+                      <option value="MT" className='font-semibold'>Montana</option>
+                      <option value="NE" className='font-semibold'>Nebraska</option>
+                      <option value="NV" className='font-semibold'>Nevada</option>
+                      <option value="NH" className='font-semibold'>New Hampshire</option>
+                      <option value="NJ" className='font-semibold'>New Jersey</option>
+                      <option value="NM" className='font-semibold'>New Mexico</option>
+                      <option value="NY" className='font-semibold'>New York</option>
+                      <option value="NC" className='font-semibold'>North Carolina</option>
+                      <option value="ND" className='font-semibold'>North Dakota</option>
+                      <option value="OH" className='font-semibold'>Ohio</option>
+                      <option value="OK" className='font-semibold'>Oklahoma</option>
+                      <option value="OR" className='font-semibold'>Oregon</option>
+                      <option value="PA" className='font-semibold'>Pennsylvania</option>
+                      <option value="RI" className='font-semibold'>Rhode Island</option>
+                      <option value="SC" className='font-semibold'>South Carolina</option>
+                      <option value="SD" className='font-semibold'>South Dakota</option>
+                      <option value="TN" className='font-semibold'>Tennessee</option>
+                      <option value="TX" className='font-semibold'>Texas</option>
+                      <option value="UT" className='font-semibold'>Utah</option>
+                      <option value="VT" className='font-semibold'>Vermont</option>
+                      <option value="VA" className='font-semibold'>Virginia</option>
+                      <option value="WA" className='font-semibold'>Washington</option>
+                      <option value="WV" className='font-semibold'>West Virginia</option>
+                      <option value="WI" className='font-semibold'>Wisconsin</option>
+                      <option value="WY" className='font-semibold'>Wyoming</option>
+                    </select>
+                  </label>
+
+                  <label htmlFor='zip_code' className='input input-bordered flex items-center gap-2'>
+                    <input type="" placeholder="ZIP Code" name='zip_code' className="grow" maxLength={6} value={formData.zip_code} onChange={onFormValueChange} />
+                  </label>
+
                 </div>
               )}
             </div>
@@ -411,33 +580,9 @@ const OrderPage = () => {
 
 
       {/* Thank You Modal */}
-      <dialog id="thank_you_modal" className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box">
+      <ThankYouModal />
 
-          <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute text-xl right-2 top-2">✕</button>
-          </form>
-
-          <div className='flex justify-center items-center flex-col'>
-            <h1 className='text-4xl font-bold'>Thank You for your order!</h1>
-            <p className='text-2xl mt-4'>Our team will be in touch with you shortly!</p>
-
-            <div className='flex flex-row gap-10 mt-10'>
-              <Link href='/'>
-                <button className='btn btn-secondary'>Back to Home</button>
-              </Link>
-              <Link href='/contact'>
-                <button className='btn btn-primary'>Contact Us</button>
-              </Link>
-            </div>
-          </div>
-
-          <div className='text-3xl mt-5 mb-3'>
-            <h1>Visit Us</h1>
-            <Image src={"/map.png"} alt='map' width={600} height={200} className='object-contain' unoptimized />
-          </div>
-        </div>
-      </dialog>
+      <OrderSummary cart={cart} onConfirmOrder={onConfirmOrder} />
 
       <ReturnToTop />
     </div>

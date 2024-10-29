@@ -9,7 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        "italiana": ["Italiana", "sans-serif"]
+        "italiana": ["Italiana", "sans-serif"],
+        "garamond": ["Cormorant Garamond", "serif"],
+        "nunito": ["Nunito", "sans-serif"],
+        "yeseva": ["Yeseva One", "serif"]
       },
       colors: {
         background: "var(--background)",
@@ -37,6 +40,5 @@ const config: Config = {
     logs: false,
     themeRoot: ":root",
   },
-
 };
 export default config;

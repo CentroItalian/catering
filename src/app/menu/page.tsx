@@ -9,7 +9,7 @@ import Footer from '@/components/Footer';
 
 const MenuPage = () => {
   return (
-    <div className='font-italiana bg-[#d7cece]'>
+    <div className='bg-[#d7cece]'>
 
       {/* Banner */}
       <div id="banner" className="relative h-[300px] sm:h-[416px] w-full">
@@ -19,7 +19,7 @@ const MenuPage = () => {
         <Image src="/banner.jpg" alt="banner" fill priority className="object-cover" />
         <div className="absolute inset-0 bg-slate-700 opacity-70"></div>
 
-        <div className="absolute inset-0 flex flex-col gap-5 items-center justify-center text-white text-4xl sm:text-6xl font-bold">
+        <div className="absolute inset-0 flex flex-col gap-5 items-center justify-center text-white text-4xl sm:text-6xl font-medium font-yeseva">
           <Image
             src="/logos/logo_transparent.png"
             width={350}

@@ -39,8 +39,8 @@ const Footer = () => {
         </Link>
         
       </div>
-      <p className="font-semibold font-italiana text-xl">905 Brentwood Rd NE, Washington, DC 20018 | Phone: 202-248-0389</p>
-      <p className="text-xl font-semibold font-italiana mt-4">{`© ${new Date().getFullYear()} Centro Italian Catering. All rights reserved.`}</p>
+      <p className="font-semibold text-xl">905 Brentwood Rd NE, Washington, DC 20018 | Phone: 202-248-0389</p>
+      <p className="text-xl font-semibold mt-4">{`© ${new Date().getFullYear()} Centro Italian Catering. All rights reserved.`}</p>
     </footer>
   )
 }
