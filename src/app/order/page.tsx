@@ -28,7 +28,6 @@ interface FormErrors {
   city?: { _errors: string[] };
   state?: { _errors: string[] };
   zip_code?: { _errors: string[] };
-
 }
 
 interface FormData {
@@ -221,12 +220,12 @@ const OrderPage = () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CONTACT_FORM_TOKEN}`,
       },
-      body: JSON.stringify({ name: 'Centro Italian Catering', email: 'test@mail.com', cart }),
+      body: JSON.stringify({ cart, order_type: orderType, ...formData }),
     });
   }
 
   return (
-    <div className="font-semibold bg-[#d7cece] relative">
+    <div className="font-semibold bg-[#d7cece] relative !scroll-smooth">
       {/* Banner */}
       <div id="banner" className="relative h-[300px] sm:h-[416px] w-full mb-5">
         <div className="absolute top-0 left-0 w-full z-20">
@@ -249,7 +248,8 @@ const OrderPage = () => {
 
       {/* Menu */}
       {menuData.map((menu) => (
-        <div key={menu.category} className="mt-6 p-10">
+
+        <div key={menu.category} id={menu.id} className="mt-6 p-10">
           <h2 className="text-5xl font-bold pb-2">{menu.category}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {menu.items.map((item) => (
@@ -383,12 +383,11 @@ const OrderPage = () => {
       <dialog id="user_details_modal" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box font-semibold">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost fixed left-2 top-2 text-2xl">✕</button>
+            <button className="btn btn-sm btn-circle btn-ghost fixed right-4 top-4 text-2xl">✕</button>
           </form>
           <form onSubmit={handleSubmitOrder}>
             <div className="flex flex-col gap-3 m-3">
 
-              {/* Radio buttons for Pick-up and Delivery */}
               <div className="form-control">
                 <div className='flex justify-center items-center mb-3'>
                   <div className="flex items-center justify-center p-2 bg-gray-100 rounded-full w-max ">
@@ -565,6 +564,29 @@ const OrderPage = () => {
                     <input type="" placeholder="ZIP Code" name='zip_code' className="grow" maxLength={6} value={formData.zip_code} onChange={onFormValueChange} />
                   </label>
 
+                  {/* Date Picker */}
+                  <label className="text-gray-700 font-semibold mb-1">Choose Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    className="input input-bordered border-2 border-gray-300 rounded-lg p-3 focus:border-primary bg-gray-50 hover:bg-gray-100 transition-all duration-150"
+                    value={formData.date} onChange={onFormValueChange}
+                    min={new Date().toISOString().split("T")[0]}
+                    max={new Date(now.setDate(now.getDate() + 14)).toISOString().split("T")[0]}
+                  />
+                  {errors.date && <p className="text-red-500 text-sm">{errors.date._errors[0]}</p>}
+
+                  {/* Time Picker */}
+                  <label className="text-gray-700 font-semibold mb-1">Choose Time</label>
+                  <input
+                    type="time"
+                    name="time"
+                    className="input input-bordered border-2 border-gray-300 rounded-lg p-3 focus:border-primary bg-gray-50 hover:bg-gray-100 transition-all duration-150"
+                    value={formData.time}
+                    onChange={onFormValueChange}
+                  />
+                  {errors.time && <p className="text-red-500 text-sm">{errors.time._errors[0]}</p>}
+
                 </div>
               )}
             </div>
@@ -582,8 +604,10 @@ const OrderPage = () => {
       {/* Thank You Modal */}
       <ThankYouModal />
 
-      <OrderSummary cart={cart} onConfirmOrder={onConfirmOrder} />
+      {/* Order Summary Modal */}
+      <OrderSummary cart={cart} onConfirmOrder={onConfirmOrder} order_type={orderType} formData={formData} />
 
+      {/* Back To Top Button Component */}
       <ReturnToTop />
     </div>
   );

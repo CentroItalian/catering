@@ -9,13 +9,10 @@ export function OrderTemplate(
     orderDetails: {
         orderNumber: string;
         deliveryDateTime: string;
-        eventType: string;
-        guestCount: number;
-        serviceStyle: string;
-        venue: string;
         address: string;
         contactName: string;
         contactPhone: string;
+        orderType: string;
     }
 ): string {
 
@@ -118,13 +115,10 @@ export function OrderTemplate(
           
           <div class="order-info">
               <p class="priority">Required Delivery/Service Time: ${orderDetails.deliveryDateTime}</p>
-              <p><strong>Event Type:</strong> ${orderDetails.eventType}</p>
-              <p><strong>Number of Guests:</strong> ${orderDetails.guestCount}</p>
-              <p><strong>Service Style:</strong> ${orderDetails.serviceStyle}</p>
+              <p class="priority">Order Type: ${orderDetails.orderType}</p>
           </div>
   
-          <div class="section-header">DELIVERY/VENUE INFORMATION</div>
-          <p><strong>Venue:</strong> ${orderDetails.venue}</p>
+          <div class="section-header">DELIVERY INFORMATION</div>
           <p><strong>Address:</strong> ${orderDetails.address}</p>
           <p><strong>Contact Person:</strong> ${orderDetails.contactName}</p>
           <p><strong>Contact Phone:</strong> ${orderDetails.contactPhone}</p>
@@ -136,29 +130,12 @@ export function OrderTemplate(
                       <th>Item Name</th>
                       <th>Quantity</th>
                       <th>Preparation Notes</th>
-                      <th>Service Equipment</th>
                   </tr>
               </thead>
               <tbody>
                   ${itemRows}
               </tbody>
           </table>
-  
-          <div class="special-instructions">
-              <h3>Special Instructions & Dietary Requirements</h3>
-              <p><strong>Additional Notes:</strong> Please review all preparation notes carefully.</p>
-          </div>
-  
-          <div class="section-header">EQUIPMENT CHECKLIST</div>
-          <ul>
-              <li>Serving utensils: Standard service set</li>
-              <li>Heating equipment: As required per item</li>
-              <li>Display items: Standard setup</li>
-          </ul>
-  
-          <div class="footer">
-              <p>For any questions or changes to this order, please contact the kitchen manager.</p>
-          </div>
       </div>
   </body>
   </html>

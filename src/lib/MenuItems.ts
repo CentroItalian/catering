@@ -7,12 +7,14 @@ interface MenuItem {
 
 interface Menu {
     category: string;
+    id: string;
     items: MenuItem[];
 }
 
 export const menu: Menu[] = [
     {
         category: "Starters & Sides",
+        id: "starters-sides",
         items: [
             {
                 category: "Starters & Sides",
@@ -91,6 +93,7 @@ export const menu: Menu[] = [
     // Salads
     {
         category: "Salads",
+        id: "salads",
         items: [
             {
                 category: "Salads",
@@ -127,6 +130,7 @@ export const menu: Menu[] = [
     // Pasta For All
     {
         category: "Pasta For All",
+        id: "pasta-for-all",
         items: [
             {
                 category: "Pasta For All",
@@ -157,6 +161,7 @@ export const menu: Menu[] = [
     // Pasta Al Forno
     {
         category: "Pasta Al Forno",
+        id: "pasta-al-forno",
         items: [
             {
                 category: "Pasta Al Forno",
@@ -181,6 +186,7 @@ export const menu: Menu[] = [
     // From Land To Sea
     {
         category: "From Land To Sea",
+        id: "from-land-to-sea",
         items: [
             {
                 category: "From Land To Sea",
@@ -211,6 +217,7 @@ export const menu: Menu[] = [
     // Entrees
     {
         category: "Entrees",
+        id: "entrees",
         items: [
             {
                 category: "Entrees",
@@ -259,6 +266,7 @@ export const menu: Menu[] = [
     // Sandwiches
     {
         category: "Sandwiches",
+        id: "sandwiches",
         items: [
             {
                 category: "Sandwiches",
@@ -295,6 +303,7 @@ export const menu: Menu[] = [
     // Desserts
     {
         category: "Desserts",
+        id: "desserts",
         items: [
             {
                 category: "Desserts",

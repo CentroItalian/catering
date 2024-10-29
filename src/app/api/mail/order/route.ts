@@ -4,7 +4,8 @@ import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
 export async function POST(request: Request) {
-  const { name, email, cart } = await request.json();
+
+  const data = await request.json();
 
   const authHeader = request.headers.get('Authorization');
   const secretToken = process.env.CONTACT_FORM_TOKEN;
@@ -26,20 +27,19 @@ export async function POST(request: Request) {
     return Math.random().toString(36).substring(2, 9).toLowerCase();
   }
 
+  const orderNum = generateOrderID();
+
   const mailOptions = {
-    from: `${name} <${email}>`,
+    from: `${data.name} <${data.email}>`,
     to: 'akshat00jain@gmail.com',
-    subject: `${generateOrderID()} | New order Recieved`,
-    html: OrderTemplate(cart, {
-        orderNumber: '123',
-        deliveryDateTime: '2021-12-31 12:00 PM',
-        eventType: 'Wedding',
-        guestCount: 100,
-        serviceStyle: 'Buffet',
-        venue: 'The Grand Ballroom',
+    subject: `${orderNum} | New order Recieved`,
+    html: OrderTemplate(data.cart, {
+        orderNumber: orderNum,
+        deliveryDateTime: `${data.date} at ${data.time}`,
         address: '123 Main St, Springfield, IL 62701',
-        contactName: 'John Doe',
-        contactPhone: '217-555-1234',
+        contactName: data.name,
+        contactPhone: data.phone,
+        orderType: data.order_type,
     }),
   };
 
