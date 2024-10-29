@@ -50,11 +50,11 @@ const BackgroundSlideshow = () => {
             fill
             quality={100}
             className="animate-zoom object-cover"
-            priority={index === 0}
+            priority={true}
           />
         </div>
       ))}
-      <div className="absolute inset-0 bg-black opacity-70"></div>
+      <div className="absolute inset-0 bg-slate-700 opacity-70"></div>
     </div>
   );
 };

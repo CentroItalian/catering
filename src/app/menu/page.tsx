@@ -17,9 +17,17 @@ const MenuPage = () => {
           <Navbar />
         </div>
         <Image src="/banner.jpg" alt="banner" fill priority className="object-cover" />
-        <div className="absolute inset-0 bg-black opacity-70"></div>
+        <div className="absolute inset-0 bg-slate-700 opacity-70"></div>
 
-        <div className="absolute inset-0 flex items-center justify-center text-white text-4xl sm:text-6xl font-bold">
+        <div className="absolute inset-0 flex flex-col gap-5 items-center justify-center text-white text-4xl sm:text-6xl font-bold">
+          <Image
+            src="/logos/logo_transparent.png"
+            width={350}
+            height={350}
+            alt="Centro Italian Catering"
+            priority
+            className='w-3/5 sm:w-1/5'
+          />
           Catering Menu
         </div>
       </div>

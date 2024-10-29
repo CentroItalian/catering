@@ -2,6 +2,7 @@ import BackgroundSlideshow from '@/components/BackgroundSlideshow';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar/Navbar';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -23,10 +24,21 @@ export default function Home() {
 
           {/* Hero Content */}
           <div className="z-10 font-italiana flex flex-col gap-5">
-            <div>
+            {/* <div>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold">CENTRO</h1>
               <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold">Italian Catering</h1>
+            </div> */}
+            <div className="flex items-center justify-center">
+              <Image
+                src="/logos/logo_transparent.png"
+                width={400}
+                height={400}
+                alt="Centro Italian Catering"
+                priority
+                className="w-1/2 sm:w-1/2"
+              />
             </div>
+
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
               <Link href="/order">
                 <button className="btn bg-yellow-300 min-w-[160px] sm:min-w-[180px] md:min-w-[220px] rounded-3xl px-4 sm:px-6 md:px-10 py-2 text-sm sm:text-lg md:text-2xl">

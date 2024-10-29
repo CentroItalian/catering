@@ -10,6 +10,8 @@ import Navbar from '@/components/Navbar/Navbar';
 
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Footer from '@/components/Footer';
+import ReadMoreDialogue from '@/components/ReadMoreDialogue';
+import ReturnToTop from '@/components/ReturnToTop';
 
 interface CartItem {
   name: string;
@@ -128,9 +130,17 @@ const OrderPage = () => {
           <Navbar />
         </div>
         <Image src="/banner.jpg" alt="banner" fill priority className="object-cover" />
-        <div className="absolute inset-0 bg-black opacity-70"></div>
-        <div className="absolute inset-0 flex items-center justify-center text-white text-4xl sm:text-6xl font-bold">
-          Centro Italian Catering
+        <div className="absolute inset-0 bg-slate-700 opacity-70"></div>
+        <div className="absolute inset-0 flex items-center justify-center text-white font-bold">
+          {/* Centro Italian Catering */}
+          <Image
+            src="/logos/logo_transparent.png"
+            width={400}
+            height={400}
+            alt="Centro Italian Catering"
+            priority
+            className='w-2/3 sm:w-1/4'
+          />
         </div>
       </div>
 
@@ -142,7 +152,29 @@ const OrderPage = () => {
             {menu.items.map((item) => (
               <div key={item.name} className="border p-4 rounded-lg bg-white">
                 <h3 className="text-xl font-semibold">{item.name}</h3>
-                <p className="text-gray-600">{item.description}</p>
+                <div className="text-gray-600">
+                  {
+                    item.description.length > 150
+                      ? (
+                        <div>
+                          {item.description.slice(0, 150) + " . . . .   "}
+                          <ReadMoreDialogue
+                            description={item.description}
+                            item_name={item.name.replace(" ", "_")}
+                            item={item}
+                            order={order}
+                            setOrder={setOrder}
+                            handleQuantityChange={handleQuantityChange}
+                          />
+                          <span className='text-blue-500 cursor-pointer' onClick={() => {
+                            (document.getElementById(`read_more_dialogue_${item.name.replace(" ", "_")}`) as HTMLDialogElement).showModal();
+                          }}>Read More</span>
+                        </div>
+                      )
+                      : item.description
+                  }
+                </div>
+                {/* <p className="text-gray-600">{item.description}</p> */}
                 <p className="text-gray-500">{item.serves}</p>
 
                 <div className="flex items-center mt-2">
@@ -367,10 +399,10 @@ const OrderPage = () => {
                 </div>
               )}
             </div>
-            
+
             <div className='flex flex-row justify-center items-center'>
-            <button className="btn " type='button' onClick={() => (document.getElementById('user_details_modal') as HTMLDialogElement).close()}>Order More</button>
-            <button className="btn ml-5 btn-success">Place Order</button>
+              <button className="btn " type='button' onClick={() => (document.getElementById('user_details_modal') as HTMLDialogElement).close()}>Order More</button>
+              <button className="btn ml-5 btn-success">Place Order</button>
             </div>
 
           </form>
@@ -406,6 +438,8 @@ const OrderPage = () => {
           </div>
         </div>
       </dialog>
+
+      <ReturnToTop />
     </div>
   );
 };
