@@ -118,6 +118,7 @@ const ContactPage = () => {
             alt="Centro Italian Catering"
             priority
             className='w-3/5 sm:w-1/5'
+            unoptimized
           />
           Contact Us
         </div>
