@@ -22,10 +22,14 @@ export async function POST(request: Request) {
     },
   });
 
+  function generateOrderID() {
+    return Math.random().toString(36).substring(2, 9).toLowerCase();
+  }
+
   const mailOptions = {
     from: `${name} <${email}>`,
     to: 'akshat00jain@gmail.com',
-    subject: "New Order",
+    subject: `${generateOrderID()} | New order Recieved`,
     html: OrderTemplate(cart, {
         orderNumber: '123',
         deliveryDateTime: '2021-12-31 12:00 PM',
