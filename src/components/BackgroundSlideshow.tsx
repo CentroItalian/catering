@@ -6,7 +6,11 @@ import { useState, useEffect } from 'react';
 const Image = dynamic(() => import('next/image'));
 
 const BackgroundSlideshow = () => {
-  const images = ['/1.jpg', '/2.jpg'];
+  const images = [
+    "https://utfs.io/a/eonyd8k4es/ii5UkNJjqPWO55YkYGXoKrWhduX0BQzUGtcYlLFj6AVnCxO9",
+    "https://utfs.io/a/eonyd8k4es/ii5UkNJjqPWOCSlcbBrDp8bylhtKjEeO3Nvz2V4qG6sFfkSJ"
+  ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
