@@ -25,7 +25,7 @@ export const menu: Menu[] = [
             {
                 category: "Starters & Sides",
                 name: "Mini Meatballs",
-                description: "Vibrant Selection Of Italian Classics: Prosciutto, Salami, And Capicola, Paired With Marinated Olives, Roasted Peppers, and Fresh Mozzarella. Served with Artisan Cheeses, Sun-Dried Tomatoes, And Crispy Crostinis",
+                description: "Tender, Bite-Sized Beef Meatballs, Seasoned With Fresh Herbs And Garlic, Slow-Cooked In A Rich Tomato Basil Sauce",
                 serves: "Tray Serves 8-10"
             },
             {
@@ -67,7 +67,7 @@ export const menu: Menu[] = [
             {
                 category: "Starters & Sides",
                 name: "Diced Fruit Platter",
-                description: "A Delightful Medley Of Roasted Brussels Sprouts, Sweet Corn, And Tender English Peas, Sautéed With Shallots And Fresh Herbs. This Vibrant Dish Creates A Perfect Balance Of Earthy And Sweet Flavors",
+                description: "A Vibrant Assortment Of Freshly Diced, Seasonal Fruits, Including Juicy Melons, Sweet Berries, And Succulent Pineapple. Artfully Arranged And Bursting With Natural Sweetness, This Colorful Platter Is The Perfect Light And Refreshing Treat For Any Occasion ",
                 serves: "Pan Serves 8-10"
             },
             {
@@ -80,12 +80,6 @@ export const menu: Menu[] = [
                 category: "Starters & Sides",
                 name: "Garlic Bread",
                 description: "Warm, crusty bread baked to golden perfection, brushed with a generous blend of melted butter, roasted garlic, and fresh parsley. Lightly toasted for a satisfying crunch and finished with a sprinkle of parmesan cheese. Perfectly fragrant and delicious, served with homemade tomato sauce on the side",
-                serves: "Pan Serves 8-10"
-            },
-            {
-                category: "Starters & Sides",
-                name: "Shrimp Cocktail",
-                description: "Chilled Jumbo Shrimp, Perfectly Cooked And Served With A Zesty Homemade Cocktail Sauce, Bursting With The Tang Of Fresh Horseradish, Lemon, And A Touch Of Spice. Garnished With A Slice Of Lemon And Fresh Herbs.",
                 serves: "Pan Serves 8-10"
             },
         ]
@@ -116,13 +110,13 @@ export const menu: Menu[] = [
             {
                 category: "Salads",
                 name: "Caprese Salad",
-                description: "fresh basil, grape tomatoes, and mozzarella ovalini tossed together in a homemade balsamic dressing",
+                description: "Fresh basil, grape tomatoes, and mozzarella ovalini tossed together in a homemade balsamic dressing",
                 serves: "Small serves 8-10, Medium serves 13-15, Large serves 18-20"
             },
             {
                 category: "Salads",
                 name: "Pasta Salad",
-                description: "tri-color rotini pasta, tomatoes, carrots, peppers, and feta cheese tossed in a homemade dressing",
+                description: "Tri-color rotini pasta, tomatoes, carrots, peppers, and feta cheese tossed in a homemade dressing",
                 serves: "Small serves 8-10, Medium serves 13-15, Large serves 18-20"
             },
         ]
@@ -132,12 +126,7 @@ export const menu: Menu[] = [
         category: "Pasta For All",
         id: "pasta-for-all",
         items: [
-            {
-                category: "Pasta For All",
-                name: "Shrimp Cocktail",
-                description: "Juicy grilled chicken served over tender fettuccine, coated in a velvety Alfredo sauce made with cream, butter, and parmesan. Garnished with fresh parsley and a hint of cracked black pepper, this dish offers a perfect balance of creamy richness and savory flavors",
-                serves: "Pan Serves 8-10"
-            },
+            
             {
                 category: "Pasta For All",
                 name: "Spaghetti and Meatballs",
@@ -154,6 +143,12 @@ export const menu: Menu[] = [
                 category: "Pasta For All",
                 name: "Chicken, Penne, Pesto",
                 description: "Grilled chicken breast tossed with perfectly al dente penne pasta, coated in a fresh basil pesto sauce made with pine nuts, parmesan, and extra virgin olive oil. Refreshing and aromatic!",
+                serves: "Pan Serves 8-10"
+            },
+            {
+                category: "Pasta For All",
+                name: "CHICKEN FETTUCCINE ALFREDO",
+                description: "Juicy Grilled Chicken Served Over Tender Fettuccine, Coated In A Velvety Alfredo Sauce Made With Cream, Butter, And Parmesan. Garnished With Fresh Parsley And A Hint Of Cracked Black Pepper, This Dish Offers A Perfect Balance Of Creamy Richness And Savory Flavors",
                 serves: "Pan Serves 8-10"
             },
         ]
@@ -209,7 +204,7 @@ export const menu: Menu[] = [
             {
                 category: "From Land To Sea",
                 name: "Jumbo Lump Crab Cakes",
-                description: "Juicy grilled chicken served over tender fettuccine, coated in a velvety Alfredo sauce made with cream, butter, and parmesan. Garnished with fresh parsley and a hint of cracked black pepper, this dish offers a perfect balance of creamy richness and savory flavors",
+                description: "Delicately Crafted With 100% Jumbo Lump Crab Meat And Absolutely No Filler, These Sumptuous Crab Cakes Are Seasoned To Perfection And Pan-Seared Until Golden Brown. Served With A Zesty Remoulade Sauce And Garnished With Fresh Herbs, Each Bite Bursts With The Sweet, Tender Flavors Of Premium Crab",
                 serves: "Pan Serves 8-10"
             },
         ]
@@ -284,19 +279,19 @@ export const menu: Menu[] = [
                 category: "Sandwiches",
                 name: "Chicken Parm Sub",
                 description: "Crispy breaded chicken cutlet, smothered in rich marinara sauce and topped with melted mozzarella cheese, all nestled in a soft, toasted sub roll",
-                serves: "Serves 8-10"
+                serves: "Minimum 4 per order"
             },
             {
                 category: "Sandwiches",
                 name: "Caprese",
-                description: "fresh basil, mozzarella, and tomato on a fresh baked sub roll topped with a homemade balsamic dressing",
+                description: "Fresh basil, mozzarella, and tomato on a fresh baked sub roll topped with a homemade balsamic dressing",
                 serves: "Serves 8-10"
             },
             {
                 category: "Sandwiches",
                 name: "Eggplant Parm Sub",
                 description: "Layers of crispy, breaded eggplant slices, generously topped with marinara sauce and melted mozzarella cheese, all tucked inside a freshly toasted sub roll",
-                serves: "Serves 8-10"
+                serves: "Minimum 4 per order"
             },
         ]
     },
@@ -305,12 +300,7 @@ export const menu: Menu[] = [
         category: "Desserts",
         id: "desserts",
         items: [
-            {
-                category: "Desserts",
-                name: "Tiramisu",
-                description: "A classic Italian dessert featuring layers of delicate ladyfingers soaked in rich espresso and coffee liqueur, layered with a velvety mascarpone cream. Topped with a dusting of cocoa powder and chocolate shavings, this indulgent treat offers a perfect balance of sweetness and coffee flavor",
-                serves: "Serves 9"
-            },
+            
             {
                 category: "Desserts",
                 name: "Cannolis",
@@ -326,7 +316,7 @@ export const menu: Menu[] = [
             {
                 category: "Desserts",
                 name: "Assorted Cookie And Chocolate Brownie Platter",
-                description: "fresh baked assorted chocolate chip, oatmeal raisin, and sugar cookies cut and half and placed on a platter top with fresh baked, quartered chocolate brownies",
+                description: "Fresh baked assorted chocolate chip, oatmeal raisin, and sugar cookies cut and half and placed on a platter top with fresh baked, quartered chocolate brownies",
                 serves: "Serves 10"
             },
         ]

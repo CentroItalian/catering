@@ -406,7 +406,7 @@ const OrderPage = () => {
                   </div>
                 </div>
 
-                <MdDelete color='#D2042D' className='cursor-pointer' onClick={() => handleRemoveFromCart(cartItem.name)} />
+                <MdDelete color='#7393B3' className='cursor-pointer' onClick={() => handleRemoveFromCart(cartItem.name)} />
               </div>
             ))
           ) : (

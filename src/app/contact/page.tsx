@@ -136,7 +136,7 @@ const ContactPage = () => {
             </h1>
 
             <p className="text-lg md:text-xl mb-3 md:mb-5">
-              Phone: 202-248-0389
+              Phone: 301-467-2289
             </p>
 
             <Image src={Map} alt="map" className="rounded-lg w-full md:w-3/4 cursor-pointer" onClick={() => handleMapImageRedirect()} />
