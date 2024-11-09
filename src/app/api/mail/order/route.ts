@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     subject: `${orderNum} | New order Recieved`,
     html: OrderTemplate(data.cart, {
         orderNumber: orderNum,
-        deliveryDateTime: `${data.date} at ${data.time}`,
+        deliveryDateTime: `${data.date} at ${data.time} ${data.period}`,
         address: '123 Main St, Springfield, IL 62701',
         contactName: data.name,
         contactPhone: data.phone,
