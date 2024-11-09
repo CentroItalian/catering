@@ -11,6 +11,8 @@ import Navbar from '@/components/Navbar/Navbar';
 import { z } from "zod";
 
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
+
 import Footer from '@/components/Footer';
 import ReadMoreDialogue from '@/components/ReadMoreDialogue';
 import ReturnToTop from '@/components/ReturnToTop';
@@ -41,6 +43,7 @@ interface FormData {
   city: string;
   state: string;
   zip_code: string;
+  instructions: string;
 }
 
 interface CartItem {
@@ -77,7 +80,9 @@ const OrderPage = () => {
     city: '',
     state: 'state',
     zip_code: '',
+    instructions: '',
   });
+
   const [order, setOrder] = useState<{ [key: string]: { quantity: number; instructions: string } }>({});
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartQuantity, setCartQuantity] = useState(0);
@@ -224,6 +229,19 @@ const OrderPage = () => {
     });
   }
 
+  const handleRemoveFromCart = (name: string) => {
+    setCart((prevCart) => prevCart.filter((item) => item.name !== name));
+    setOrder((prevOrder) => {
+      const newOrder = { ...prevOrder };
+      delete newOrder[name];
+      return newOrder;
+    });
+    setCartQuantity((prevQuantity) => {
+      const item = cart.find((item) => item.name === name);
+      return item ? prevQuantity - item.quantity : prevQuantity;
+    });
+  };
+
   return (
     <div className="font-semibold bg-[#d7cece] relative !scroll-smooth">
       {/* Banner */}
@@ -342,14 +360,18 @@ const OrderPage = () => {
           <h2 className="text-2xl font-bold mb-4">Cart</h2>
           {cart.length > 0 ? (
             cart.map((cartItem) => (
-              <div key={cartItem.name} className="flex justify-between mb-2">
-                <div>
-                  <span className="font-semibold">{cartItem.name}</span>
-                  <span className="text-gray-500"> x {cartItem.quantity}</span>
-                  {cartItem.instructions && (
-                    <p className="text-sm text-gray-400">Instructions: {cartItem.instructions}</p>
-                  )}
+              <div className='flex justify-between'>
+                <div key={cartItem.name} className="flex justify-between mb-2">
+                  <div>
+                    <span className="font-semibold">{cartItem.name}</span>
+                    <span className="text-gray-500"> x {cartItem.quantity}</span>
+                    {cartItem.instructions && (
+                      <p className="text-sm text-gray-400">Instructions: {cartItem.instructions}</p>
+                    )}
+                  </div>
                 </div>
+
+                <MdDelete color='#D2042D' className='cursor-pointer' onClick={() => handleRemoveFromCart(cartItem.name)} />
               </div>
             ))
           ) : (
@@ -369,7 +391,7 @@ const OrderPage = () => {
                 (document.getElementById('cart_modal') as HTMLDialogElement).close();
               }}
             >
-              Close
+              Order More
             </button>
           </form>
         </div>
@@ -389,7 +411,25 @@ const OrderPage = () => {
             <div className="flex flex-col gap-3 m-3">
 
               <div className="form-control">
-                <div className='flex justify-center items-center mb-3'>
+                <div className='flex flex-col justify-center items-center mb-3'>
+                  <h2 className="text-2xl font-semibold">Order Summary</h2>
+                  <div className='mt-5 min-h-[150px] w-full p-5 rounded-lg font-nunito font-semibold mb-5 border border-black'>
+                    {cart.length > 0 ? (
+                      cart.map((cartItem) => (
+                        <div key={cartItem.name} className="flex justify-between mb-2">
+                          <div>
+                            <span className="font-semibold">{cartItem.name}</span>
+                            <span className="text-gray-500"> x {cartItem.quantity}</span>
+                            {cartItem.instructions && (
+                              <p className="text-sm text-gray-600">Instructions: {cartItem.instructions}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500">Your cart is empty</p>
+                    )}
+                  </div>
                   <div className="flex items-center justify-center p-2 bg-gray-100 rounded-full w-max ">
                     <div
                       onClick={() => setOrderType('pickup')}
@@ -460,7 +500,7 @@ const OrderPage = () => {
                     {errors.date && <p className="text-red-500 text-sm">{errors.date._errors[0]}</p>}
 
                     {/* Time Picker */}
-                    <label className="text-gray-700 font-semibold mb-1">Choose Time</label>
+                    <label className="text-gray-700 font-semibold">Choose Time</label>
                     <input
                       type="time"
                       name="time"
@@ -469,6 +509,16 @@ const OrderPage = () => {
                       onChange={onFormValueChange}
                     />
                     {errors.time && <p className="text-red-500 text-sm">{errors.time._errors[0]}</p>}
+
+                    <label htmlFor='instructions' className="form-control min-w-fit">
+                      <textarea
+                        className="textarea textarea-bordered min-h-24 resize-none"
+                        name='instructions'
+                        placeholder="Pickup Instructions"
+                        value={formData.instructions}
+                        onChange={onFormValueChange}
+                      />
+                    </label>
                   </div>
                 )}
 
@@ -587,6 +637,15 @@ const OrderPage = () => {
                   />
                   {errors.time && <p className="text-red-500 text-sm">{errors.time._errors[0]}</p>}
 
+                  <label htmlFor='instructions' className="form-control gap-2 min-w-fit">
+                    <textarea
+                      className="textarea textarea-bordered min-h-24 resize-none"
+                      name='instructions'
+                      placeholder="Delivery Instructions"
+                      value={formData.instructions}
+                      onChange={onFormValueChange}
+                    />
+                  </label>
                 </div>
               )}
             </div>
@@ -599,7 +658,6 @@ const OrderPage = () => {
           </form>
         </div>
       </dialog>
-
 
       {/* Thank You Modal */}
       <ThankYouModal />
