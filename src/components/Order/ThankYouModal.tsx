@@ -12,7 +12,7 @@ const ThankYouModal = () => {
           <button className="btn btn-sm btn-circle btn-ghost absolute text-xl right-2 top-2">✕</button>
         </form>
 
-        <div className='flex justify-center items-center flex-col'>
+        <div className='flex justify-center items-center flex-col text-center'>
           <h1 className='text-4xl font-bold'>Thank You for your order!</h1>
           <p className='text-2xl mt-4'>Our team will be in touch with you shortly!</p>
 
