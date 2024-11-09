@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
   const mailOptions = {
     from: `${name} <${email}>`,
-    to: 'akshat00jain@gmail.com',
+    to: 'orders@mgmroastbeef.com',
     subject: subject,
     html: ContactFormTemplate(name, email, subject, message, phone),
   };
@@ -34,5 +34,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error sending email:', error);
     return NextResponse.json({ message: 'Error sending email' }, { status: 500 });
+  } finally {
+    transporter.close();
   }
 }

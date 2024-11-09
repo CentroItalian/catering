@@ -31,8 +31,8 @@ export async function POST(request: Request) {
 
   const mailOptions = {
     from: `${data.name} <${data.email}>`,
-    to: 'akshat00jain@gmail.com',
-    subject: `${orderNum} | New order Recieved`,
+    to: 'orders@mgmroastbeef.com',
+    subject: `${orderNum} | Italian Centro Catering | New order Received`,
     html: OrderTemplate(data.cart, {
         orderNumber: orderNum,
         deliveryDateTime: `${data.date} at ${data.time} ${data.period}`,
@@ -49,5 +49,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error sending email:', error);
     return NextResponse.json({ message: 'Error sending email' }, { status: 500 });
+  } finally {
+    transporter.close();
   }
 }
