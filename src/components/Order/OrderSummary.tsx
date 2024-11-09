@@ -25,6 +25,7 @@ interface OrderSummaryProps {
     city: string;
     state: string;
     zip_code: string;
+    period: string;
   }
 }
 
@@ -85,14 +86,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ cart, onConfirmOrder, order
             <div className='mt-5'>
               <p>{`Delivery Date: ${formData.date}`}</p>
               <p>{`Delivery Time: ${formData.time}`}</p>
-              <p>{`Delivery Address: ${formData.address}, ${formData.city}, ${formData.state}, ${formData.zip_code}`}</p>
+              <p>{`Delivery Address: \n${formData.address}, ${formData.city}, ${formData.state}, ${formData.zip_code}`}</p>
             </div>
           )}
 
           {order_type === 'pickup' && (
             <div className='mt-5'>
               <p>{`Pick-up Date: ${formData.date}`}</p>
-              <p>{`Pick-up Time: ${formData.time}`}</p>
+              <p>{`Pick-up Time: ${formData.time} ${formData.period}`}</p>
             </div>
           )}
         </div>

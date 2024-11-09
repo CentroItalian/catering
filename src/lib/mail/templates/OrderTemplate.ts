@@ -24,6 +24,15 @@ export function OrderTemplate(
       </tr>
     `).join('');
 
+    const typeDiv = orderDetails.orderType.toLowerCase() === 'delivery'
+        ? `<div class="section-header">DELIVERY INFORMATION</div>
+            <p><strong>Address:</strong> ${orderDetails.address}</p>
+            <p><strong>Contact Person:</strong> ${orderDetails.contactName}</p>
+            <p><strong>Contact Phone:</strong> ${orderDetails.contactPhone}</p>`
+        : `<div class="section-header">PICKUP INFORMATION</div>
+            <p><strong>Contact Person:</strong> ${orderDetails.contactName}</p>
+            <p><strong>Contact Phone:</strong> ${orderDetails.contactPhone}</p>`;
+
     return `
   <!DOCTYPE html>
   <html lang="en">
@@ -115,14 +124,11 @@ export function OrderTemplate(
           
           <div class="order-info">
               <p class="priority">Required Delivery/Service Time: ${orderDetails.deliveryDateTime}</p>
-              <p class="priority">Order Type: ${orderDetails.orderType}</p>
+              <p class="priority">Order Type: ${orderDetails.orderType[0].toUpperCase() + orderDetails.orderType.slice(1)}</p>
           </div>
-  
-          <div class="section-header">DELIVERY INFORMATION</div>
-          <p><strong>Address:</strong> ${orderDetails.address}</p>
-          <p><strong>Contact Person:</strong> ${orderDetails.contactName}</p>
-          <p><strong>Contact Phone:</strong> ${orderDetails.contactPhone}</p>
           
+          ${typeDiv}
+
           <div class="section-header">ORDER DETAILS</div>
           <table class="item-table">
               <thead>

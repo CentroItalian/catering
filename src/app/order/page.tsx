@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import JSConfetti from "js-confetti";
 
 import { menu as menuData } from "@/lib/MenuItems";
@@ -18,6 +17,7 @@ import ReadMoreDialogue from '@/components/ReadMoreDialogue';
 import ReturnToTop from '@/components/ReturnToTop';
 import OrderSummary from '@/components/Order/OrderSummary';
 import ThankYouModal from '@/components/Order/ThankYouModal';
+import TimeInput from '@/components/Inputs/TimeInput';
 
 interface FormErrors {
   name?: { _errors: string[] };
@@ -44,6 +44,7 @@ interface FormData {
   state: string;
   zip_code: string;
   instructions: string;
+  period: string;
 }
 
 interface CartItem {
@@ -60,28 +61,42 @@ const orderSchema = z.object({
     .string()
     .regex(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone must be in the format (123) 456-7890"),
   date: z.string().min(1, "Date is required"),
-  time: z.string().min(1, "Time is required"),
+  time: z
+  .string()
+  .min(1, "State is required")
+  .refine((value) => value !== "select", {
+    message: "Please select a valid time",
+  }),
   address: z.string().optional().or(z.literal("")),
-  city: z.string().optional().or(z.literal("")),
-  state: z.string().optional().or(z.literal("")),
-  zip_code: z.string().optional().or(z.literal("")),
+  city: z.string().min(1, "City is required"),
+  state: z
+    .string()
+    .min(1, "State is required")
+    .refine((value) => value !== "state", {
+      message: "Please select a valid state",
+    }),
+  zip_code: z.string().min(5, "ZIP Code must be 5 digits"),
+  instructions: z.string().optional().or(z.literal("")),
+  period: z.enum(["AM", "PM"]).optional(),
 });
 
 const OrderPage = () => {
   const [errors, setErrors] = useState<FormErrors>({});
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     name: '',
     organization: '',
     email: '',
     phone: '',
     date: '',
-    time: '',
+    time: 'select',
     address: '',
     city: '',
     state: 'state',
     zip_code: '',
     instructions: '',
+    period: 'AM',
   });
+
 
   const [order, setOrder] = useState<{ [key: string]: { quantity: number; instructions: string } }>({});
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -142,6 +157,19 @@ const OrderPage = () => {
     }));
   };
 
+  const handleTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prevData: FormData) => ({
+      ...prevData,
+      time: event.target.value,
+    }));
+  }
+
+  const handlePeriodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prevData: FormData) => ({
+      ...prevData,
+      period: event.target.value,
+    }));
+  }
 
   const onFormValueChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value } = e.target;
@@ -196,10 +224,17 @@ const OrderPage = () => {
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationResult = orderSchema.safeParse(formData);
+    let validationResult;
+    if (orderType === 'pickup') {
+      const { address, city, state, zip_code, ...pickupFormData } = formData;
+      validationResult = orderSchema.omit({ address: true, city: true, state: true, zip_code: true }).safeParse(pickupFormData);
+    } else {
+      validationResult = orderSchema.safeParse(formData);
+    }
 
     if (!validationResult.success) {
       const formattedErrors = validationResult.error.format();
+      console.log(formattedErrors);
       setErrors(formattedErrors);
       return;
     }
@@ -360,8 +395,8 @@ const OrderPage = () => {
           <h2 className="text-2xl font-bold mb-4">Cart</h2>
           {cart.length > 0 ? (
             cart.map((cartItem) => (
-              <div className='flex justify-between'>
-                <div key={cartItem.name} className="flex justify-between mb-2">
+              <div key={cartItem.name} className='flex justify-between'>
+                <div className="flex justify-between mb-2">
                   <div>
                     <span className="font-semibold">{cartItem.name}</span>
                     <span className="text-gray-500"> x {cartItem.quantity}</span>
@@ -501,12 +536,10 @@ const OrderPage = () => {
 
                     {/* Time Picker */}
                     <label className="text-gray-700 font-semibold">Choose Time</label>
-                    <input
-                      type="time"
-                      name="time"
-                      className="input input-bordered border-2 border-gray-300 rounded-lg p-3 focus:border-primary bg-gray-50 hover:bg-gray-100 transition-all duration-150"
-                      value={formData.time}
-                      onChange={onFormValueChange}
+                    <TimeInput
+                      formData={formData}
+                      handlePeriodChange={handlePeriodChange}
+                      handleTimeChange={handleTimeChange}
                     />
                     {errors.time && <p className="text-red-500 text-sm">{errors.time._errors[0]}</p>}
 
@@ -530,27 +563,33 @@ const OrderPage = () => {
                   <label htmlFor='name' className='input input-bordered flex items-center gap-2'>
                     <input type="text" placeholder="Name *" name='name' className="grow" value={formData.name} onChange={onFormValueChange} />
                   </label>
+                  {errors.name && <p className="text-red-500 text-sm">{errors.name._errors[0]}</p>}
 
                   <label htmlFor='organization' className='input input-bordered flex items-center gap-2'>
                     <input type="text" placeholder="Organization" name='organization' className="grow" value={formData.organization} onChange={onFormValueChange} />
                   </label>
+                  {errors.organization && <p className="text-red-500 text-sm">{errors.organization._errors[0]}</p>}
 
                   <label htmlFor='email' className='input input-bordered flex items-center gap-2'>
                     <input type="email" placeholder="Email *" name='email' className="grow" value={formData.email} onChange={onFormValueChange} />
                   </label>
+                  {errors.email && <p className="text-red-500 text-sm">{errors.email._errors[0]}</p>}
 
                   <label htmlFor='phone' className='input input-bordered flex items-center gap-2'>
                     <input type="text" placeholder="Phone *" name='phone' className="grow" value={formData.phone} onChange={onFormValueChange} />
                   </label>
+                  {errors.phone && <p className="text-red-500 text-sm">{errors.phone._errors[0]}</p>}
 
                   {/* Address fields */}
                   <label htmlFor='address' className='input input-bordered flex items-center gap-2'>
-                    <input type="text" placeholder="Street Address" name='address' className="grow" value={formData.address} onChange={onFormValueChange} />
+                    <input type="text" placeholder="Street Address *" name='address' className="grow" value={formData.address} onChange={onFormValueChange} />
                   </label>
+                  {errors.address && <p className="text-red-500 text-sm">{errors.address._errors[0]}</p>}
 
                   <label htmlFor='city' className='input input-bordered flex items-center gap-2'>
-                    <input type="text" placeholder="City" name="city" className="grow" value={formData.city} onChange={onFormValueChange} />
+                    <input type="text" placeholder="City *" name="city" className="grow" value={formData.city} onChange={onFormValueChange} />
                   </label>
+                  {errors.city && <p className="text-red-500 text-sm">{errors.city._errors[0]}</p>}
 
                   {/* Dropdown for State */}
                   <label htmlFor='state'>
@@ -609,10 +648,12 @@ const OrderPage = () => {
                       <option value="WY" className='font-semibold'>Wyoming</option>
                     </select>
                   </label>
+                  {errors.state && <p className="text-red-500 text-sm">{errors.state._errors[0]}</p>}
 
                   <label htmlFor='zip_code' className='input input-bordered flex items-center gap-2'>
-                    <input type="" placeholder="ZIP Code" name='zip_code' className="grow" maxLength={6} value={formData.zip_code} onChange={onFormValueChange} />
+                    <input type="" placeholder="ZIP Code *" name='zip_code' className="grow" maxLength={6} value={formData.zip_code} onChange={onFormValueChange} />
                   </label>
+                  {errors.zip_code && <p className="text-red-500 text-sm">{errors.zip_code._errors[0]}</p>}
 
                   {/* Date Picker */}
                   <label className="text-gray-700 font-semibold mb-1">Choose Date</label>
@@ -628,12 +669,10 @@ const OrderPage = () => {
 
                   {/* Time Picker */}
                   <label className="text-gray-700 font-semibold mb-1">Choose Time</label>
-                  <input
-                    type="time"
-                    name="time"
-                    className="input input-bordered border-2 border-gray-300 rounded-lg p-3 focus:border-primary bg-gray-50 hover:bg-gray-100 transition-all duration-150"
-                    value={formData.time}
-                    onChange={onFormValueChange}
+                  <TimeInput
+                    formData={formData}
+                    handlePeriodChange={handlePeriodChange}
+                    handleTimeChange={handleTimeChange}
                   />
                   {errors.time && <p className="text-red-500 text-sm">{errors.time._errors[0]}</p>}
 
