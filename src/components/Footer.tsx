@@ -14,7 +14,7 @@ const Footer = () => {
           </div>
         </Link>
 
-        <Link href={"tel:202-248-0389"} target='_blank' rel='noopener noreferrer'>
+        <Link href={"tel:301-467-2289"} target='_blank' rel='noopener noreferrer'>
           <div className={`rounded-lg flex justify-center items-center w-12 h-12 bg-[#25D366] ease-in-out duration-300 hover:opacity-80`} title='Phone'>
             <FaPhone className="text-3xl cursor-pointer" />
           </div>
