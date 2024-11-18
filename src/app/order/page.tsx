@@ -62,11 +62,11 @@ const orderSchema = z.object({
     .regex(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone must be in the format (123) 456-7890"),
   date: z.string().min(1, "Date is required"),
   time: z
-  .string()
-  .min(1, "State is required")
-  .refine((value) => value !== "select", {
-    message: "Please select a valid time",
-  }),
+    .string()
+    .min(1, "State is required")
+    .refine((value) => value !== "select", {
+      message: "Please select a valid time",
+    }),
   address: z.string().optional().or(z.literal("")),
   city: z.string().min(1, "City is required"),
   state: z
@@ -247,10 +247,27 @@ const OrderPage = () => {
     setCart([]);
     setOrder({});
     setCartQuantity(0);
+
+    setFormData({
+      name: '',
+      organization: '',
+      email: '',
+      phone: '',
+      date: '',
+      time: 'select',
+      address: '',
+      city: '',
+      state: 'state',
+      zip_code: '',
+      instructions: '',
+      period: 'AM',
+    });
+
     confettiRef.current?.addConfetti({
       confettiRadius: 5,
       confettiNumber: 300
     });
+
     (document.getElementById('order_summary_modal') as HTMLDialogElement).close();
     (document.getElementById('thank_you_modal') as HTMLDialogElement).showModal();
 
@@ -262,6 +279,26 @@ const OrderPage = () => {
       },
       body: JSON.stringify({ cart, order_type: orderType, ...formData }),
     });
+
+    if (orderType === "pickup") {
+      await fetch("/api/sheets/order/pickup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CONTACT_FORM_TOKEN}`,
+        },
+        body: JSON.stringify({ cart, order_type: orderType, ...formData }),
+      });
+    } else {
+      await fetch("/api/sheets/order/delivery", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CONTACT_FORM_TOKEN}`,
+        },
+        body: JSON.stringify({ cart, order_type: orderType, ...formData }),
+      });
+    }
   }
 
   const handleRemoveFromCart = (name: string) => {
