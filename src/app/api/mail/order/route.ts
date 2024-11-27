@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
   const mailOptions = {
     from: `${data.name} <${data.email}>`,
-    to: 'orders@mgmroastbeef.com',
+    to: 'aviralnandan06@gmail.com',
     subject: `${orderNum} | Italian Centro Catering | New order Received`,
     html: OrderTemplate(data.cart, {
         orderNumber: orderNum,

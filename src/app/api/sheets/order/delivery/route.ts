@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
         const formattedCart = cart.map(({ name, quantity, instructions }: { name: string, quantity: string, instructions: string }) => `${name} x ${quantity}\n${instructions ? `(${instructions})` : ""}\n\n`.slice(0, -2)).join(', ');
 
-        const doc = new GoogleSpreadsheet('11apCji2ji8-ktS8qtXNxlSuu5KkcD0fiyujFxENoAZM', serviceAccountAuth);
+        const doc = new GoogleSpreadsheet('1hBXw3RJJ3iO4PKbbw5kmY6TQ1q4xzFuQ0BEH_Q6qJnA', serviceAccountAuth);
 
         await doc.loadInfo();
         const sheet = doc.sheetsByTitle['DeliverySheet'];

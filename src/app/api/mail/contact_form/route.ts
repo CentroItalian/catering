@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
   const mailOptions = {
     from: `${name} <${email}>`,
-    to: 'orders@mgmroastbeef.com',
+    to: 'aviralnandan06@gmail.com',
     subject: subject,
     html: ContactFormTemplate(name, email, subject, message, phone),
   };
